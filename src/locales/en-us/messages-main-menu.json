@@ -1,0 +1,67 @@
+{
+    "MAIN_MENU_DOWNLOAD_TITLE": {
+      "message": "Download",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_UPLOAD_TITLE": {
+      "message": "Resume previous alignment",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_ALIGN_TITLE": {
+      "message": "Done",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_REDO_TITLE": {
+      "message": "Redo",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_UNDO_TITLE": {
+      "message": "Undo",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_ADD_TARGET_TITLE": {
+      "message": "Add translation",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_SHOW_OPTIONS_TITLE": {
+      "message": "Show options",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_HIDE_OPTIONS_TITLE": {
+      "message": "Hide options",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_CLEAR_TEXT": {
+      "message": "Start new alignment",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_TEXT_ENTER_LINK": {
+      "message": "Enter Text",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_TEXT_ALIGN_LINK": {
+      "message": "Align Text",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_TEXT_EDIT_LINK": {
+      "message": "Edit Text",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    },
+    "MAIN_MENU_CHOOSE_FILE": {
+      "message": "Choose a file",
+      "description": "Button in main menu",
+      "component": "MainMenu"
+    }
+}
