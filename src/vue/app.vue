@@ -1,5 +1,18 @@
 <template>
   <div id="alpheios-alignment-editor-app-container" class="alpheios-alignment-editor-app-container">
+    <span class="alpheios-alignment-app-menu-open-icon" @click = "state.menuShow++" v-show="!state.showInitialScreenBlock">
+      <navbar-icon />
+    </span>
+
+    <main-menu 
+      @upload-data-from-file = "uploadDataFromFile"
+      @clear-all = "startOver"
+      @new-initial-alignment = "newInitialAlignment"
+      @upload-data-from-db = "uploadDataFromDB"
+
+      :menuShow = "state.menuShow"
+      :updateCurrentPage = "state.updateCurrentPage"
+    />
 
     <notification-bar />
 
@@ -67,6 +80,9 @@ import TextEditor from '@/vue/text-editor/text-editor.vue'
 import AlignEditor from '@/vue/align-editor/align-editor.vue'
 import TokensEditor from '@/vue/tokens-editor/tokens-editor.vue'
 
+import MainMenu from '@/vue/main-menu.vue'
+import NavbarIcon from '@/inline-icons/navbar.svg'
+
 import { reactive, inject } from 'vue'
 import { useStore } from 'vuex'
 
@@ -98,7 +114,9 @@ const state = reactive({
   showAlignmentGroupsEditorBlock: false,
   showTokensEditorBlock: false,
 
-  updateCurrentPage: 'initial-screen'
+  updateCurrentPage: 'initial-screen',
+
+  menuShow: 1
 })
 
 const uploadDataFromFile = async (fileData, extension) => {

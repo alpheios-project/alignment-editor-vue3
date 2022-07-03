@@ -4,8 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npx webpack serve --config build/webpack.config.js",
-    "build": "npx webpack --config build/webpack.config.js --mode=development",
+    "dev": "npx webpack serve --config build/core.config.js",
+    "build": "npm run build-output && npm run build-core",
+    "build-core": "npx webpack --config build/core.config.js --mode=development",
+    "build-output": "npx webpack --config build/output.config.js --mode=development",
     "test": "jest tests --coverage",
     "test-vue": "jest tests/vue/ --coverage",
     "test-a": "jest tests/lib/controllers/",
@@ -19,6 +21,7 @@
     "intl-messageformat": "^10.0.1",
     "vue": "^3.2.36",
     "vue-multiselect": "^3.0.0-alpha.2",
+    "vuedraggable": "^4.1.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
@@ -43,8 +46,11 @@
     "dotenv-webpack": "^7.1.0",
     "fake-indexeddb": "^3.1.8",
     "file-loader": "^6.2.0",
+    "html-inline-css-webpack-plugin": "^1.11.1",
+    "html-inline-script-webpack-plugin": "^3.0.0",
     "html-loader": "^3.1.0",
     "html-loader-jest": "^0.2.1",
+    "html-webpack-plugin": "^5.5.0",
     "jest": "^27.0.0",
     "jest-environment-jsdom": "^27.0.0",
     "mini-css-extract-plugin": "^2.6.0",

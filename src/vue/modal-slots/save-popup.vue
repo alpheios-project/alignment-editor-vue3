@@ -67,8 +67,8 @@ const $alignedGC = inject('$alignedGC')
 const state = reactive({
   currentDownloadType: null,
   fileNameDate: null,
-  fileNameTitle: null,
-  fileName: null
+  fileNameTitle: '',
+  fileName: ''
 })
 
 onMounted(() => {
@@ -92,7 +92,7 @@ const beforeOpen = () => {
   const now = NotificationSingleton.timeNow.bind(new Date())()
   state.fileNameDate = now
   
-  state.fileNameTitle = titleName     
+  state.fileNameTitle = titleName.value    
 }
 
 const downloadTypeId = (dTypeName) => {
