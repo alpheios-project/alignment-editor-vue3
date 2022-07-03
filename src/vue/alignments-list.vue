@@ -32,10 +32,12 @@
 import DeleteIcon from '@/inline-icons/delete.svg'
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 
-import { reactive, inject, computed } from 'vue'
+import { reactive, inject, computed, watch } from 'vue'
+import { useStore } from 'vuex'
 
-const textC = inject('textC')
+const $textC = inject('$textC')
 const l10n = computed(() => { return L10nSingleton })
+const $store = useStore()
 
 const state = reactive({ 
   alignments: []
@@ -47,7 +49,7 @@ const readyAlignments = computed(() => {
   return state.alignments && state.alignments.length > 0
 })
 
-state.alignments = await textC.uploadFromAllAlignmentsDB()
+state.alignments = await $textC.uploadFromAllAlignmentsDB()
 
 const removeId = (alData) => {
   return `alpheios-delete-id-${alData.alignmentID}`
@@ -75,6 +77,12 @@ const formatHasTokens = (hasTokens) => {
   }
 }
 
+watch( 
+  () => $store.state.reloadAlignmentsList, 
+  async () => {
+    state.alignments = await $textC.uploadFromAllAlignmentsDB()
+  }
+)
 </script>
 
 <style lang="scss">

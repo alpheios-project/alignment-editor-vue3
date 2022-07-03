@@ -28,14 +28,13 @@
       >
           <div class="vue-modal-content">
               <slot />
-              <button type="button" @click="close" >Close</button>
           </div>
       </div>
     </Transition>
   </div>
 </template>
 <script>
-import { parseNumber, validateNumber, windowWidthWithoutScrollbar, getTouchEvent, isInput, inRange } from '@/vue/modal/utils.js'
+import { parseNumber, validateNumber, windowWidthWithoutScrollbar, getTouchEvent, isInput, inRange } from '@/vue/modal-base/utils.js'
 
 import { onBeforeMount, onMounted, onBeforeUnmount, reactive, ref, computed, toRefs, watchEffect, watch, nextTick } from 'vue'
 
@@ -372,9 +371,7 @@ export default {
     })
 
     watch(() => props.toggleState, () => {
-      console.info('watch props.toggleState - begin', props.toggleState, state.visible)
       toggle(!state.visible)
-      console.info('watch props.toggleState - end', props.toggleState, state.visible)
     })
 
     watchEffect (() => {
@@ -575,6 +572,9 @@ export default {
   padding: 20px;
 }
 
+.vue-modal-content {
+  height: 100%;
+}
 .vm--container.scrollable .vm--modal {
   margin-bottom: 2px;
 }

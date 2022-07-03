@@ -1,17 +1,81 @@
 <template>
   <div id="alpheios-alignment-editor-app-container" class="alpheios-alignment-editor-app-container">
-    <initial-screen @upload-data-from-file = "uploadDataFromFile" @new-initial-alignment = "newInitialAlignment" />
+
+    <notification-bar />
+
+    <initial-screen 
+        v-show="state.showInitialScreenBlock"
+        @upload-data-from-file = "uploadDataFromFile" @upload-data-from-db = "uploadDataFromDB" 
+        @delete-data-from-db = "deleteDataFromDB"
+        @new-initial-alignment="newInitialAlignment" @clear-all-alignments="clearAllAlignmentsFromDB" />
+
+    <text-editor v-show="state.showSourceTextEditorBlock" 
+        @add-translation="addTarget" @align-text="showSummaryPopup" 
+        @showAlignmentGroupsEditor = "showAlignmentGroupsEditor" 
+        @showTokensEditor = "showTokensEditor"
+      />
+
+    <align-editor v-show="state.showAlignmentGroupsEditorBlock" 
+      @showSourceTextEditor = "showSourceTextEditor" 
+      @showTokensEditor = "showTokensEditor"
+    />
+
+    <tokens-editor v-show="state.showTokensEditorBlock" :renderEditor = "state.renderTokensEditor" 
+        @showSourceTextEditor = "showSourceTextEditor"  
+        @showAlignmentGroupsEditor = "showAlignmentGroupsEditor"
+    />
+
+    <modal name="create-al-title" :toggleState="state.createAlTitleState" height="auto" :shiftY="0.3">
+      <create-al-title @create-alignment = "createANewAlignment" @close-modal="state.createAlTitleState++"/>
+    </modal>
+
+    <modal name="waiting" :toggleState="state.waitingState" height="auto">
+      <waiting />
+    </modal>
+
+    <modal name="upload-warn" :toggleState="state.uploadWarnState" height="auto">
+      <upload-warn :updatedDTInDB = "state.updatedDTInDB"  
+        @continue-upload-from-file = "continueUploadFromFile"   
+        @continue-upload-from-indexeddb ="continueUploadFromIndexedDB"
+        @close-modal="state.uploadWarnState++"
+      />
+    </modal>
+
+    <modal name="summary" :toggleState="state.summaryState" height="auto">
+      <summary @closeModal = "state.summaryState++" @start-align = "alignTexts"/>
+    </modal>
   </div>
+  
 </template>
 <script setup>
-import { reactive, inject } from 'vue'
+import DocumentUtility from '@/lib/utility/document-utility.js'
+import NotificationSingleton from '@/lib/notifications/notification-singleton'
 
 import SettingsController from '@/lib/controllers/settings-controller.js'
 import Alignment from '@/lib/data/alignment'
 
 import InitialScreen from '@/vue/initial-screen.vue'
+import Modal from '@/vue/modal-base/modal.vue'
 
-const textC = inject('textC')
+import CreateAlTitle from '@/vue/modal-slots/create-al-title.vue'
+import Waiting from '@/vue/modal-slots/waiting.vue'
+import UploadWarn from '@/vue/modal-slots/upload-warn.vue'
+import Summary from '@/vue/modal-slots/summary.vue'
+
+import NotificationBar from '@/vue/common/notification-bar.vue'
+import TextEditor from '@/vue/text-editor/text-editor.vue'
+import AlignEditor from '@/vue/align-editor/align-editor.vue'
+import TokensEditor from '@/vue/tokens-editor/tokens-editor.vue'
+
+import { reactive, inject } from 'vue'
+import { useStore } from 'vuex'
+
+const $store = useStore()
+
+const $textC = inject('$textC')
+const $historyAGC = inject('$historyAGC')
+const $tokensEC = inject('$tokensEC')
+const $alignedGC = inject('$alignedGC')
 
 const local = {
   fileData: null,
@@ -20,13 +84,27 @@ const local = {
 }
 
 const state = reactive({ 
-  updatedDTInDB: null
+  updatedDTInDB: null,
+  
+  createAlTitleState: 0,
+  waitingState: 0,
+  uploadWarnState: 0,
+  summaryState: 0,
+
+  renderTokensEditor: 1,
+  
+  showInitialScreenBlock: true,
+  showSourceTextEditorBlock: false,
+  showAlignmentGroupsEditorBlock: false,
+  showTokensEditorBlock: false,
+
+  updateCurrentPage: 'initial-screen'
 })
 
 const uploadDataFromFile = async (fileData, extension) => {
   if (fileData) {
-    const shortAlData = textC.extractIDandDateFromFile(fileData, extension)
-    const checkAlInDB = await textC.checkShortAlInDB(shortAlData)
+    const shortAlData = $textC.extractIDandDateFromFile(fileData, extension)
+    const checkAlInDB = shortAlData ? await $textC.checkShortAlInDB(shortAlData) : false
 
     if (shortAlData && checkAlInDB) {
       local.fileData = fileData
@@ -34,27 +112,197 @@ const uploadDataFromFile = async (fileData, extension) => {
       state.updatedDTInDB = checkAlInDB.updatedDT
       local.checkAlInDB = checkAlInDB
 
-      // this.$modal.show('upload-warn')
-      // $vfm.show({ component: 'Upload' })
-      // console.info('modal.show - Upload', Upload)
+
+      state.uploadWarnState++
     } else {
+
       uploadDataFromFileFinal(fileData, extension)
     }    
   }
 }
 
 const uploadDataFromFileFinal = (fileData, extension) => {
-  const alignment = textC.uploadDataFromFile(fileData, SettingsController.tokenizerOptionValue, extension)
+  const alignment = $textC.uploadDataFromFile(fileData, SettingsController.tokenizerOptionValue, extension)
 
   if (alignment instanceof Alignment) {
-    return console.info('startOver - alignment')
-    // return this.startOver(alignment)
+    return startOver(alignment)
   }
-  // this.showSourceTextEditor()
-  console.info('showSourceTextEditor - started')
+  showSourceTextEditor()
+}
+
+const uploadDataFromDB = async (alData) => {
+  if (alData) {
+    state.waitingState++
+    const alignment = await $textC.uploadDataFromDB(alData)
+    state.waitingState++
+    if (alignment instanceof Alignment) {
+      return startOver(alignment)
+    } else {
+      console.error('Something went wrong with uploading data - ', alignment)
+    }
+  }
+  return true
+}
+
+const deleteDataFromDB = async (alData) => {
+  if (alData) {
+    state.waitingState++
+    const result = await $textC.deleteDataFromDB(alData)
+    state.waitingState++
+    return result
+  }
+}
+
+const clearAllAlignmentsFromDB = async () => {
+  state.waitingState++
+  const result = await $textC.clearAllAlignmentsFromDB()
+  state.waitingState++
+  return result
 }
 
 const newInitialAlignment = () => {
-  console.info('newInitialAlignment - emitted')
+  state.createAlTitleState++ // open modal
 }
+
+const createANewAlignment = (alTitle) => {
+  $textC.createAlignment(alTitle)
+  $historyAGC.startTracking($textC.alignment)
+  showSourceTextEditor()
+}
+
+const continueUploadFromFile = () => {
+  uploadDataFromFileFinal(local.fileData, local.extension)
+  clearUploadData()
+}
+
+const continueUploadFromIndexedDB = () => {
+  uploadDataFromDB(local.checkAlInDB)
+  clearUploadData()
+}
+
+const clearUploadData = () => {
+  local.fileData = null
+  local.extension = null
+  state.updatedDTInDB = null
+  local.checkAlInDB = null
+}
+
+const addTarget = () => {
+  $textC.addNewTarget()
+  showSourceTextEditor()
+}
+
+const showSourceTextEditor = () => {
+  state.showSourceTextEditorBlock = true
+  state.showAlignmentGroupsEditorBlock = false
+  state.showTokensEditorBlock = false
+  state.showInitialScreenBlock = false
+
+  DocumentUtility.setPageClassToBody('text-editor')
+  state.updateCurrentPage = 'text-editor'
+}
+
+const showSummaryPopup = async () => {
+  if (!SettingsController.showSummaryPopup) {
+    await alignTexts()
+  } else {
+    state.summaryState++
+  }
+}
+
+const showAlignmentGroupsEditor = () => {
+  state.showSourceTextEditorBlock = false
+  state.showAlignmentGroupsEditorBlock = true
+  state.showTokensEditorBlock = false
+  state.showInitialScreenBlock = false
+
+  DocumentUtility.setPageClassToBody('align-editor')
+  state.updateCurrentPage = 'align-editor'
+}
+
+const showTokensEditor = () => {
+  state.showSourceTextEditorBlock = false
+  state.showAlignmentGroupsEditorBlock = false
+  state.showTokensEditorBlock = true
+  state.showInitialScreenBlock = false
+
+  DocumentUtility.setPageClassToBody('tokens-editor')
+  state.updateCurrentPage = 'tokens-editor'
+
+  state.renderTokensEditor++
+}
+
+const showInitialScreen = () => {
+  state.showSourceTextEditorBlock = false
+  state.showAlignmentGroupsEditorBlock = false
+  state.showTokensEditorBlock = false
+  state.showInitialScreenBlock = true
+
+  DocumentUtility.setPageClassToBody('initial')
+  state.updateCurrentPage = 'initial'
+}
+
+const startOver = (alignment) => {
+  if (alignment instanceof Alignment) {
+    $textC.alignment = alignment
+    $alignedGC.alignment = alignment
+  } else {
+    $textC.startOver()
+    $alignedGC.startOver()
+  }
+  $historyAGC.startOver($textC.alignment)
+  $tokensEC.startOver($textC.alignment)
+  
+  NotificationSingleton.clearNotifications()
+  if (alignment instanceof Alignment) {
+    $store.commit('incrementUploadCheck')
+  } else {
+    $store.commit('incrementAlignmentRestarted')
+  }
+  $store.commit('incrementDocSourceUpdated')
+
+  if ((alignment instanceof Alignment) && alignment.hasOriginAlignedTexts) {
+    showAlignmentGroupsEditor()
+  } else {
+    showSourceTextEditor()
+  }
+}
+
+const alignTexts = async () => {
+  state.waitingState++
+  const result = await $alignedGC.createAlignedTexts($textC.alignment)
+  state.waitingState++
+  if (result) {
+    $tokensEC.loadAlignment($textC.alignment)
+    showAlignmentGroupsEditor()
+  }
+}
+
 </script>
+<style lang="scss">
+    .alpheios-alignment-editor-container {
+      padding: 15px 15px 0;
+
+      h2 {
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .alpheios-alignment-app-menu-open-icon {
+        display: block;
+        position: fixed;
+        top: 25px;
+        left: 10px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+
+
+        svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+    }
+</style> 

@@ -2,6 +2,8 @@
 
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const Dotenv = require('dotenv-webpack')
+
 const sass = require('sass')
 
 const webpack = require('webpack')
@@ -101,7 +103,8 @@ module.exports = {
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: 'style/style-alignment-editor.css'
-    })
+    }),
+    new Dotenv()
   ],
   devServer: {
     static: {

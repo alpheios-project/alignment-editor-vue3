@@ -65,39 +65,33 @@
         </div>
       </div>
   </div>
-  <modal name="create-al-title" :toggleState="state.createAlTitleState" height="auto" :shiftY="0.3">
-    <p>Test modal</p>
-  </modal>
+
 </template>
 <script setup>
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 import AlignmentsList from '@/vue/alignments-list.vue'
-import UploadDialog from '@/vue/common/upload.vue'
-import Modal from '@/vue/modal/modal.vue'
 
 import { reactive, ref, inject, computed, defineAsyncComponent } from 'vue'
 
 const alpheiosfileuploadpage = ref(null)
 
-const textC = inject('textC')
+const $textC = inject('$textC')
 const l10n = computed(() => { return L10nSingleton })
 
 const state = reactive({ 
   showUploadBlock: false,
   showUploadFromFile: false,
-  showUploadFromDB: false,
-  createAlTitleState: 0
+  showUploadFromDB: false
 })
 
-const emit = defineEmits([ 'upload-data-from-file', 'new-initial-alignment', 'upload-data-from-db', 'delete-data-from-db' ])
+const emit = defineEmits([ 'upload-data-from-file', 'new-initial-alignment', 'upload-data-from-db', 'delete-data-from-db', 'clear-all-alignments' ])
 
 const indexedDBAvailable = computed(() => {
-  return textC.indexedDBAvailable
+  return $textC.indexedDBAvailable
 })
 
 const startNewAlignment = () => {
   emit("new-initial-alignment")
-  state.createAlTitleState++
 }
 
 const resumePrevAlignment = () => {
@@ -120,7 +114,7 @@ const loadTextFromFile = () => {
   if (!file) { return }
   const extension = file.name.indexOf('.') > -1 ? file.name.split('.').pop() : ''
 
-  if (!textC.checkUploadedFileByExtension(extension)) { 
+  if (!$textC.checkUploadedFileByExtension(extension)) { 
     alpheiosfileuploadpage.value.value = ''
     return 
   }
@@ -144,7 +138,6 @@ const deleteDataFromDB = (alData) => {
   emit('delete-data-from-db', alData)
 }
 
-console.info('state - ', state)
 </script>
 
 <style lang="scss">

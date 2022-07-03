@@ -10,8 +10,12 @@ import NotificationSingleton from '@/lib/notifications/notification-singleton'
 import StoreDefinition from '@/lib/store/store-definition'
 
 import TextsController from '@/lib/controllers/texts-controller.js'
+import AlignedGroupsController from '@/lib/controllers/aligned-groups-controller.js'
+import TokensEditController from '@/lib/controllers/tokens-edit-controller.js'
+import HistoryAlGroupsController from '@/lib/controllers/history-algroups-controller.js'
 import SettingsController from '@/lib/controllers/settings-controller.js'
 import StorageController from '@/lib/controllers/storage-controller.js'
+import AnnotationsController from '@/lib/controllers/annotations-controller.js'
 
 export default class AppController {
   constructor ({ appId } = {}) {
@@ -32,8 +36,40 @@ export default class AppController {
 
     await this.defineSettingsController()
 
+    if (SettingsController.themeOptionValue) {
+      this.defineColorTheme({ theme: SettingsController.themeOptionValue, themesList: [] })
+    }
+
     if (this.pageSettings && this.pageSettings.appId) {
       this.attachVueComponents()
+    }
+
+    this.defineClassReadingTools({ value: SettingsController.enableAlpheiosReadingTools })
+  }
+
+  /**
+  *
+  * @param {String} theme - theme name
+  * @param {Array[String]} themesList - available theme's names
+  */
+  defineColorTheme ({ theme, themesList }) {
+    themesList.forEach(themeItem => {
+      document.documentElement.classList.remove(`alpheios-${themeItem}`)
+      document.body.classList.remove(`alpheios-${themeItem}`)
+    })
+
+    document.documentElement.classList.add(`alpheios-${theme}`)
+    document.body.classList.add(`alpheios-${theme}`)
+  }
+
+  defineClassReadingTools ({ value }) {
+    const hideClassName = 'alpehios-hide-readding-tools-toolbar'
+    if (!value) {
+      document.documentElement.classList.add(hideClassName)
+      document.body.classList.add(hideClassName)
+    } else {
+      document.documentElement.classList.remove(hideClassName)
+      document.body.classList.remove(hideClassName)
     }
   }
 
@@ -42,16 +78,71 @@ export default class AppController {
   }
 
   attachVueComponents () {
-    const app = createApp(appVue)
+    this.app = createApp(appVue)
 
-    this.defineTextController(app)
-    app.use(this.store)
-    app.mount(`#${this.pageSettings.appId}`) 
+    this.defineTextController()
+    this.defineAlignedGroupsController()
+    this.defineTokensEditController()
+    this.defineHistoryAlGroupsController()
+    this.defineAnnotationsController()
+
+    this.app.use(this.store)
+    this.app.mount(`#${this.pageSettings.appId}`) 
+
+    this.defineEvents()
+
   }
 
-  defineTextController (app) {
+  defineEvents () {
+    SettingsController.evt.SETTINGS_CONTROLLER_THEME_UPDATED.sub(this.defineColorTheme.bind(this))
+    SettingsController.evt.SETTINGS_CONTROLLER_READING_TOOLS_CLASS_UPDATED.sub(this.defineClassReadingTools.bind(this))
+  }
+  
+  /**
+   * Creates TextController and attaches to Vue components
+   */
+  defineTextController () {
     this.textC = new TextsController(this.store)
-    app.provide('textC', this.textC)
+    if (this.app) {
+      this.app.provide('$textC', this.textC)
+    }
+  }
+
+  /**
+   * Creates AlignedGroupsController and attaches to Vue components
+   */
+  defineAlignedGroupsController () {
+    this.alignedGC = new AlignedGroupsController(this.store)
+    if (this.app) {
+      this.app.provide('$alignedGC', this.alignedGC)
+    }
+  }
+
+  /**
+   * Creates TokensEditController and attaches to Vue components
+   */
+  defineTokensEditController () {
+    this.tokensEC = new TokensEditController(this.store)
+    if (this.app) {
+      this.app.provide('$tokensEC', this.tokensEC)
+    }
+  }
+
+  /**
+   * Creates HistoryAlGroupsController and attaches to Vue components
+   */
+   defineHistoryAlGroupsController () {
+    this.historyAGC = new HistoryAlGroupsController(this.store)
+    if (this.app) {
+      this.app.provide('$historyAGC', this.historyAGC)
+    }
+  }
+
+  defineAnnotationsController () {
+    this.annotationsC = new AnnotationsController(this.store)
+    if (this.app) {
+      this.app.provide('$annotationsC', this.annotationsC)
+    }
   }
 
   async defineSettingsController () {
@@ -100,3 +191,5 @@ export default class AppController {
     StorageController.definedDBAdapter()
   }
 }
+
+
