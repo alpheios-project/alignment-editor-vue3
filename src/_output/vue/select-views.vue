@@ -1,14 +1,14 @@
 <template>
     <div class = "alpheios-alignment-header-line" :class="{ 'alpheios-alignment-header-line-in-header' : inHeader }">
         <div class = "alpheios-alignment-radio-block alpheios-alignment-option-item__control">
-            <span v-for="(item, idx) in allViewTypes" :key="idx">
+            <span v-for="(item, idx) in state.localAllViewTypes" :key="idx" :ref = "itemRefs1">
               <input type="radio" :id="itemIdWithValue(item.value)" :value="item.value" v-model="state.viewType" 
-                :ref = "itemIdWithValue(item.value)"
                 :data-checked1="item.value"
                 :data-checked2="state.viewType"
                 @change="changeViewType"
+                :ref = "itemRefs2"
               />
-              <label :for="itemIdWithValue(item.value)" @click = "clickInput(item.value)"> {{ item.label }} </label>
+              <label :for="itemIdWithValue(item.value)" @click = "clickInput(idx)"> {{ item.label }} </label>
             </span>
             <span>
             <select
@@ -24,10 +24,12 @@
     </div>
 </template>
 <script setup>
-import Tooltip from '@/_output/vue/tooltip.vue'
+import Tooltip from '@/_output/vue/common/tooltip.vue'
 import { computed, inject, reactive, onMounted, watch, ref, nextTick } from 'vue'
 
 const emit = defineEmits([ 'updateViewType' ])
+const itemRefs1 = ref([])
+const itemRefs2 = ref([])
 
 const props = defineProps({
   inHeader: {
@@ -47,11 +49,17 @@ const state = reactive({
   sentenceChoice: [
     { value: 1, label: 'current' },
     { value: 2, label: 'one of both side' }
-  ]
+  ],
+  localAllViewTypes: []
 })
 
 onMounted(() => {
-  state.viewType = props.allViewTypes[0]
+  props.allViewTypes.forEach(viewType => {
+    state.localAllViewTypes.push(viewType)
+  })
+  state.viewType = state.localAllViewTypes[0]
+  console.info('itemRefs1 - ', itemRefs1.value)
+  console.info('itemRefs2 - ', itemRefs2.value)
 })
 
 const itemIdWithValue = (value) => {
@@ -62,7 +70,9 @@ const changeViewType = () => {
   emit('updateViewType', { viewType: state.viewType, sentenceCount: state.sentenceCount })
 }
 
-const clickInput = (itemValue) => {
+const clickInput = (itemIndex) => {
+  console.info('itemRefs.value ', itemIndex, itemRefs1.value)
+  // itemRefs.value[itemIndex].click()
   /*
   const refInput = this.itemIdWithValue(itemValue)
 

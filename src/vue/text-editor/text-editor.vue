@@ -30,7 +30,7 @@
 
       <span class="alpheios-alignment-text-editor-block__part alpheios-alignment-text-editor-block__part-right">
         <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" id="alpheios-actions-menu-button__enter-save"
-            :disabled="!downloadAvailable" @click="state.saveEnterState++">
+            :disabled="!downloadAvailable" @click="emit('toggle-save')">
             {{ l10n.getMsgS('TEXT_EDITOR_HEADER_SAVE') }}
         </button>
       </span>
@@ -90,11 +90,7 @@
       <options-text-enter @closeModal = "state.optionsTextEnterState++" />
     </modal>
 
-    <modal name="save-enter" :toggleState="state.saveEnterState" 
-          :draggable="true" height="auto" 
-           >   
-      <save-popup @closeModal = "state.saveEnterState++" />
-    </modal>
+
 
   </div>
 </template>
@@ -106,17 +102,19 @@ import GearIcon from '@/inline-icons/gear.svg'
 import Tooltip from '@/vue/common/tooltip.vue'
 import SettingsController from '@/lib/controllers/settings-controller.js'
 import HelpPopup from '@/vue/modal-slots/help-popup.vue'
-import SavePopup from '@/vue/modal-slots/save-popup.vue'
+
 import HelpBlockEnter from '@/vue/help-blocks/eng/help-block-enter.vue'
 import Modal from '@/vue/modal-base/modal.vue'
 import OptionsTextEnter from '@/vue/options/options-text-enter.vue'
+
+
 
 import TextEditorSingleBlock from '@/vue/text-editor/text-editor-single-block.vue'
 
 import { computed, inject, reactive } from 'vue'
 import { useStore } from 'vuex'
 
-const emit = defineEmits([ 'showAlignmentGroupsEditor', 'showTokensEditor', 'add-translation', 'align-text' ])
+const emit = defineEmits([ 'showAlignmentGroupsEditor', 'showTokensEditor', 'add-translation', 'align-text', 'toggle-save' ])
 
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()

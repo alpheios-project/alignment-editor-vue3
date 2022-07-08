@@ -59,9 +59,9 @@
 
         <div class="alpheios-modal-footer" >
           <div class="alpheios-editor-summary-footer" >
-            <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" @click = "startAlign" >
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" @click = "startAlign" >
                   {{ l10n.getMsgS('SUMMARY_POPUP_OK_BUTTON') }}</button>
-            <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" @click="emit('closeModal')" >
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" @click="emit('closeModal')" >
                   {{ l10n.getMsgS('SUMMARY_POPUP_CANCEL_BUTTON') }}</button>
           </div>
         </div>
@@ -102,6 +102,7 @@ const showSummaryPopupOpt = computed(() => {
 })
 
 const contentAvailable = computed(() => {
+  console.info('contentAvailable -', originalLangData.value, targetsLangData.value)
   return $store.state.docSourceUpdated && originalLangData.value && targetsLangData.value
 })
 

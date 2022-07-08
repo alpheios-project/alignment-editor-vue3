@@ -26,6 +26,7 @@
         @add-translation="addTarget" @align-text="showSummaryPopup" 
         @showAlignmentGroupsEditor = "showAlignmentGroupsEditor" 
         @showTokensEditor = "showTokensEditor"
+        @toggle-save = "state.saveState++"
       />
 
     <align-editor v-show="state.showAlignmentGroupsEditorBlock" 
@@ -55,7 +56,13 @@
     </modal>
 
     <modal name="summary" :toggleState="state.summaryState" height="auto">
-      <summary @closeModal = "state.summaryState++" @start-align = "alignTexts"/>
+      <summary-block @closeModal = "state.summaryState++" @start-align = "alignTexts" />
+    </modal>
+
+    <modal name="save" :toggleState="state.saveState" 
+          :draggable="true" height="auto" @toggleWaiting = "toggleWaiting"
+           >   
+      <save-popup @closeModal = "state.saveState++"   />
     </modal>
   </div>
   
@@ -73,7 +80,8 @@ import Modal from '@/vue/modal-base/modal.vue'
 import CreateAlTitle from '@/vue/modal-slots/create-al-title.vue'
 import Waiting from '@/vue/modal-slots/waiting.vue'
 import UploadWarn from '@/vue/modal-slots/upload-warn.vue'
-import Summary from '@/vue/modal-slots/summary.vue'
+import SummaryBlock from '@/vue/modal-slots/summary-block.vue'
+import SavePopup from '@/vue/modal-slots/save-popup.vue'
 
 import NotificationBar from '@/vue/common/notification-bar.vue'
 import TextEditor from '@/vue/text-editor/text-editor.vue'
@@ -105,7 +113,9 @@ const state = reactive({
   createAlTitleState: 0,
   waitingState: 0,
   uploadWarnState: 0,
+  
   summaryState: 0,
+  saveState: 0,
 
   renderTokensEditor: 1,
   
@@ -118,6 +128,11 @@ const state = reactive({
 
   menuShow: 1
 })
+
+const toggleWaiting = () => {
+  console.info('App - toggleWaiting')
+  state.waitingState++
+}
 
 const uploadDataFromFile = async (fileData, extension) => {
   if (fileData) {
@@ -298,29 +313,33 @@ const alignTexts = async () => {
 
 </script>
 <style lang="scss">
-    .alpheios-alignment-editor-container {
-      padding: 15px 15px 0;
+.alpheios-header {
+  padding: 10px 10px 10px 45px;
+}
 
-      h2 {
-        margin: 0;
-        padding: 0;
-      }
+.alpheios-alignment-editor-container {
+  padding: 15px 15px 0;
+
+  h2 {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.alpheios-alignment-app-menu-open-icon {
+    display: block;
+    position: fixed;
+    top: 25px;
+    left: 10px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
-
-    .alpheios-alignment-app-menu-open-icon {
-        display: block;
-        position: fixed;
-        top: 25px;
-        left: 10px;
-        width: 25px;
-        height: 25px;
-        cursor: pointer;
-
-
-        svg {
-          width: 100%;
-          height: 100%;
-          display: block;
-        }
-    }
+}
 </style> 

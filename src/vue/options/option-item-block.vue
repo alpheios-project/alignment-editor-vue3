@@ -61,7 +61,7 @@
 
     <div class="alpheios-alignment-checkbox-block alpheios-alignment-option-item__control" 
          v-if="optionType === 'boolean'"
-         :class = "{ 'alpheios-alignment-checkbox-block__disabled': props.disabled }">
+         :class = "checkboxClasses">
       <input type="checkbox" v-model="state.selected" :id="itemId" @change = "changeOption" :disabled="props.disabled">
       <label :for="itemId" >{{ checkboxLabel }}
         <span v-html="labelText" v-if="props.showCheckboxTitle"></span>
@@ -176,6 +176,13 @@ watch(
     updateSelectedFromExternal()
   }
 )
+
+const checkboxClasses = computed(() => {
+  return {
+    'alpheios-alignment-checkbox-block__disabled': props.disabled, 
+    'alpheios-alignment-checkbox-block__has_checkbox_label': !props.showCheckboxTitle 
+  }
+})
 
 const itemId = computed(() => {
   return `${props.optionItem.name.replace(/\./g, '_')}-id`
@@ -405,8 +412,16 @@ const itemIdWithValue = (value) => {
   .alpheios-alignment-checkbox-block.alpheios-alignment-option-item__control {
     vertical-align: middle;
   }
+
+  
   .alpheios-alignment-checkbox-block {
     width: 48%;
+  }
+
+  .alpheios-alignment-checkbox-block__has_checkbox_label {
+    &.alpheios-alignment-checkbox-block {
+      width: 28px;
+    }
   }
 }
 

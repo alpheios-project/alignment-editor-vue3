@@ -4,14 +4,14 @@
       <span class="alpheios-alignment-app-menu-close-icon" @click = "closeMenu">
         <x-close-icon />
       </span>
-      <!--
+
       <select-views @updateViewType = "updateViewType" :inHeader = "false" :allViewTypes = "props.allViewTypes" />
-      -->
+
       <div class="alpheios-alignment-app-menu__buttons" :class="{ 'alpheios-alignment-menu-only-filter': props.onlyFilter }">
-        <!--
+
         <text-filter-block :fullData="props.fullData" v-for="view in allViewsNames" :key="view"
-            @changeOrder = "changeOrder" @updateVisibility = "updateVisibility" :view = "view" v-show = "props.currentView === view"/>
-        -->
+            @changeOrder = "changeOrder" @updateVisibility = "updateVisibility" 
+            :view = "view" v-show = "props.currentView === view"/>
       </div>
     </div>
     <div class="alpheios-app-black-screen" v-show="state.menuShown"></div>
@@ -22,7 +22,7 @@ import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 import XCloseIcon from '@/inline-icons/xclose.svg'
 import Tooltip from '@/vue/common/tooltip.vue'
 
-// import TextFilterBlock from '@/_output/vue/text-filter-block.vue'
+import TextFilterBlock from '@/_output/vue/text-filter-block.vue'
 import SelectViews from '@/_output/vue/select-views.vue'
 
 import { computed, inject, reactive, onMounted, watch, ref, nextTick } from 'vue'

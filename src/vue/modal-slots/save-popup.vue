@@ -59,7 +59,7 @@ import { useStore } from 'vuex'
 const $store = useStore()
 
 const l10n = computed(() => { return L10nSingleton })
-const emit = defineEmits([ 'closeModal' ])
+const emit = defineEmits([ 'closeModal', 'toggleWaiting' ])
 
 const $textC = inject('$textC')
 const $alignedGC = inject('$alignedGC')
@@ -105,14 +105,20 @@ const downloadData = async () => {
   state.fileName = `${ state.fileNameDate }-${ state.fileNameTitle }`
 
   emit('closeModal')
+  
   let additional = {}
   if (state.currentDownloadType === 'htmlDownloadAll') {
     additional = {
       theme: SettingsController.themeOptionValue
     }
   }
-  await $textC.downloadData(state.currentDownloadType, additional, state.fileName)
   
+  emit('toggleWaiting')
+  console.info('SaveP - toggleWaiting - open')
+  const result = await $textC.downloadData(state.currentDownloadType, additional, state.fileName)
+  emit('toggleWaiting')
+  console.info('SaveP - toggleWaiting - close')
+  return result
 }
 
 </script>

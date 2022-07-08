@@ -27,13 +27,13 @@
                      v-if="state.identList['viewFull'].length > 1">
                 <navbar-icon />
               </span>
-<!--
+
               <select-views @updateViewType = "updateViewType" :inHeader = "true" :allViewTypes = "state.allViewTypes" />
--->
+
               <div class="alpheios-alignment-editor-container-question-button">
                 <tooltip tooltipText = "Help" tooltipDirection = "left">
                     <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-help"
-                        @click="$modal.show('help-block')" >
+                        @click="state.helpEnterState++" >
                         <span class="alpheios-alignment-button-icon">
                         <question-icon />
                         </span>
@@ -42,9 +42,6 @@
               </div>
             </div>
             <p class="alpheios-alignment-editor-container__view-notice" v-html="noticeText"></p>
-<!--          
-            <text-filter-block :fullData="fullData" v-if="false"
-                @changeOrder = "changeOrder" @updateVisibility = "updateVisibility" view = "horizontal" />
 
             <al-groups-view-full :fullData="fullData" :identList = "state.identList[state.viewType]" 
                   v-if="state.viewType === 'viewFull'" />
@@ -52,18 +49,25 @@
                   v-if="state.viewType === 'view3Columns'" />
             <al-groups-view-short :fullData="fullData" :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewShort'" />
+
             <al-groups-view-sentence :fullData="fullData" :identList = "state.identList[state.viewType]"  
                   :sentence-count = "state.sentenceCount" v-if="state.viewType === 'viewSentence'" />
+
             <al-groups-view-equivalence :fullData="fullData" :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewEquivalence'" />
+
             <al-groups-view-interlinearly :fullData="fullData" :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewInterlinearly'" />
--->
+
         </div>
 <!--
         <annotation-block />
-        <help-popup @closeModal = "$modal.hide('help-block')" />
 -->
+    <modal name="help-enter" :toggleState="state.helpEnterState" 
+          :shiftY="0.3" >     
+      <help-popup @closeModal = "state.helpEnterState++" />
+    </modal>
+
     </div>
 </template>
 <script setup>
@@ -73,21 +77,23 @@ import SourceData from '@/_output/data/source-data.js'
 // import TextFilterBlock from '@/_output/vue/text-filter-block.vue'
 // import AnnotationBlock from '@/_output/vue/annotation-block.vue'
 
-// import AlGroupsViewFull from '@/_output/vue/views/al-groups-view-full.vue'
-// import AlGroupsViewShort from '@/_output/vue/views/al-groups-view-short.vue'
-// import AlGroupsViewSentence from '@/_output/vue/views/al-groups-view-sentence.vue'
-// import AlGroupsViewEquivalence from '@/_output/vue/views/al-groups-view-equivalence.vue'
-// import AlGroupsViewColumns from '@/_output/vue/views/al-groups-view-columns.vue'
-// import AlGroupsViewInterlinearly from '@/_output/vue/views/al-groups-view-interlinearly.vue'
+import AlGroupsViewFull from '@/_output/vue/views/al-groups-view-full.vue'
+import AlGroupsViewShort from '@/_output/vue/views/al-groups-view-short.vue'
+import AlGroupsViewSentence from '@/_output/vue/views/al-groups-view-sentence.vue'
+import AlGroupsViewEquivalence from '@/_output/vue/views/al-groups-view-equivalence.vue'
+import AlGroupsViewColumns from '@/_output/vue/views/al-groups-view-columns.vue'
+import AlGroupsViewInterlinearly from '@/_output/vue/views/al-groups-view-interlinearly.vue'
 
 import QuestionIcon from '@/_output/inline-icons/question.svg'
-import Tooltip from '@/_output/vue/tooltip.vue'
+import Tooltip from '@/_output/vue/common/tooltip.vue'
 
-// import HelpPopup from '@/_output/vue/help-popup.vue'
+import HelpPopup from '@/_output/vue/help-popup.vue'
 import MainMenu from '@/_output/vue/main-menu.vue'
+import SelectViews from '@/_output/vue/select-views.vue'
+
+import Modal from '@/vue/modal-base/modal.vue'
 
 import NavbarIcon from '@/_output/inline-icons/navbar.svg'
-import SelectViews from '@/_output/vue/select-views.vue'
 
 import ImagesConverted from '@/_output/data/images-converted.js'
 
@@ -118,7 +124,9 @@ const state = reactive({
   ],
 
   alpheiosLogoOnlyPNG: ImagesConverted.alpheiosLogoOnlyPNG,
-  alpheiosLogoBlackPNG: ImagesConverted.alpheiosLogoBlackPNG
+  alpheiosLogoBlackPNG: ImagesConverted.alpheiosLogoBlackPNG,
+
+  helpEnterState: 0
 })
 
 onMounted(() => {

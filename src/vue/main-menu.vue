@@ -28,10 +28,12 @@
           </div>
         
           <div class="alpheios-alignment-editor-initial-screen__alignments-container" v-show="state.showUploadBlock" v-if="indexedDBAvailable">
+            <Suspense>
               <alignments-list 
                   :menuVersion = "true"
                   @upload-data-from-db="uploadDataFromDB"
               />
+            </Suspense>
           </div>
         </div>
       </div>

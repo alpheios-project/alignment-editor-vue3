@@ -27,7 +27,7 @@
           aria-modal="true"
       >
           <div class="vue-modal-content">
-              <slot @toggleWaiting = "emit('toggleWaiting')" />
+              <slot />
           </div>
       </div>
     </Transition>
