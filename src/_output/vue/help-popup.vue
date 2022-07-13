@@ -28,8 +28,6 @@ const emit = defineEmits([ 'closeModal' ])
 </script>
 <style lang="scss">
 .alpheios-alignment-editor-modal-help {
-  overflow: auto;
-
   .alpheios-alignment-modal-close-icon {
     top: -25px;
     right: -10px;
