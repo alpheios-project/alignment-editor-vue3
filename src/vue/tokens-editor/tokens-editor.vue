@@ -9,7 +9,7 @@
         <span class="alpheios-alignment-text-editor-block-buttons__part">
           <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_HELP')" tooltipDirection = "top">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-help"
-                @click="state.helpEditState++">
+                @click="$modal.show('help-edit')">
                 <span class="alpheios-alignment-button-icon">
                   <question-icon />
                 </span>
@@ -17,7 +17,7 @@
           </tooltip>
           <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_OPTIONS')" tooltipDirection = "top">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-options"
-                @click="state.optionsTextEditState++">
+                @click="$modal.show('options-edit')">
                 <span class="alpheios-alignment-button-icon">
                   <gear-icon />
                 </span>
@@ -26,7 +26,7 @@
         </span>
         <span class="alpheios-alignment-text-editor-block__part alpheios-alignment-text-editor-block__part-right">
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" id="alpheios-actions-menu-button__enter-save"
-              @click="state.saveEditState++">
+              @click="$modal.show('save')">
               {{ l10n.getMsgS('TEXT_EDITOR_HEADER_SAVE') }}
           </button>
         </span>
@@ -35,12 +35,13 @@
     <tokens-editor-inner-block v-if="state.renderTokensEditor" @insertTokens="startInsertTokens" 
         :removeAllActivatedFlag = "state.removeAllActivatedFlag"/>
 
-    <modal name="save-edit" :toggleState="state.saveEditState" 
-          :draggable="true" height="auto" 
-           >   
-      <save-popup @closeModal = "state.saveEditState++" />
-    </modal>
+    <help-popup modalName = "help-edit">
+      <template v-slot:content > <help-block-edit /> </template>
+    </help-popup>
+  
+    <options-text-edit />
 
+<!--
     <modal name="options-edit" :toggleState="state.optionsTextEditState" 
           :draggable="true" height="auto" :shiftY="0.3" >   
       <options-text-edit @closeModal = "state.optionsTextEditState++" />
@@ -58,7 +59,7 @@
           height="auto" :shiftY="0.3" >   
       <insert-tokens @closeModal = "closeInsertTokens"  :token = "state.edittedToken"  />
     </modal>
-
+-->
   </div>
 </template>
 <script setup>
@@ -66,8 +67,6 @@ import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 import SettingsController from '@/lib/controllers/settings-controller.js'
 import Tooltip from '@/vue/common/tooltip.vue'
 
-import Modal from '@/vue/modal-base/modal.vue'
-import SavePopup from '@/vue/modal-slots/save-popup.vue'
 import OptionsTextEdit from '@/vue/options/options-text-edit.vue'
 import TokensEditorInnerBlock from '@/vue/tokens-editor/tokens-editor-inner-block.vue'
 
@@ -85,6 +84,7 @@ const emit = defineEmits([ 'showSourceTextEditor', 'showAlignmentGroupsEditor' ]
 
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
+const $modal =  inject('$modal')
 const $alignedGC = inject('$alignedGC')
 
 const props = defineProps({

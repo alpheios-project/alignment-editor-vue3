@@ -26,7 +26,6 @@
         @add-translation="addTarget" @align-text="showSummaryPopup" 
         @showAlignmentGroupsEditor = "showAlignmentGroupsEditor" 
         @showTokensEditor = "showTokensEditor"
-        @toggle-save = "state.saveState++"
       />
 
     <align-editor v-show="state.showAlignmentGroupsEditorBlock" 
@@ -39,31 +38,15 @@
         @showAlignmentGroupsEditor = "showAlignmentGroupsEditor"
     />
 
-    <modal name="create-al-title" :toggleState="state.createAlTitleState" height="auto" :shiftY="0.3">
-      <create-al-title @create-alignment = "createANewAlignment" @close-modal="state.createAlTitleState++"/>
-    </modal>
+    <waiting />
 
-    <modal name="waiting" :toggleState="state.waitingState" height="auto">
-      <waiting />
-    </modal>
-
-    <modal name="upload-warn" :toggleState="state.uploadWarnState" height="auto">
-      <upload-warn :updatedDTInDB = "state.updatedDTInDB"  
+    <upload-warn :updatedDTInDB = "state.updatedDTInDB"  
         @continue-upload-from-file = "continueUploadFromFile"   
         @continue-upload-from-indexeddb ="continueUploadFromIndexedDB"
-        @close-modal="state.uploadWarnState++"
       />
-    </modal>
-
-    <modal name="summary" :toggleState="state.summaryState" height="auto">
-      <summary-block @closeModal = "state.summaryState++" @start-align = "alignTexts" />
-    </modal>
-
-    <modal name="save" :toggleState="state.saveState" 
-          :draggable="true" height="auto" @toggleWaiting = "toggleWaiting"
-           >   
-      <save-popup @closeModal = "state.saveState++"   />
-    </modal>
+    <summary-block @start-align = "alignTexts" />
+    <save-popup />
+    <create-al-title @create-alignment = "createANewAlignment" />
   </div>
   
 </template>
@@ -75,8 +58,6 @@ import SettingsController from '@/lib/controllers/settings-controller.js'
 import Alignment from '@/lib/data/alignment'
 
 import InitialScreen from '@/vue/initial-screen.vue'
-import Modal from '@/vue/modal-base/modal.vue'
-
 import CreateAlTitle from '@/vue/modal-slots/create-al-title.vue'
 import Waiting from '@/vue/modal-slots/waiting.vue'
 import UploadWarn from '@/vue/modal-slots/upload-warn.vue'
@@ -96,6 +77,8 @@ import { useStore } from 'vuex'
 
 const $store = useStore()
 
+const $modal = inject('$modal')
+
 const $textC = inject('$textC')
 const $historyAGC = inject('$historyAGC')
 const $tokensEC = inject('$tokensEC')
@@ -110,13 +93,6 @@ const local = {
 const state = reactive({ 
   updatedDTInDB: null,
   
-  createAlTitleState: 0,
-  waitingState: 0,
-  uploadWarnState: 0,
-  
-  summaryState: 0,
-  saveState: 0,
-
   renderTokensEditor: 1,
   
   showInitialScreenBlock: true,
@@ -128,11 +104,6 @@ const state = reactive({
 
   menuShow: 1
 })
-
-const toggleWaiting = () => {
-  console.info('App - toggleWaiting')
-  state.waitingState++
-}
 
 const uploadDataFromFile = async (fileData, extension) => {
   if (fileData) {
@@ -146,7 +117,7 @@ const uploadDataFromFile = async (fileData, extension) => {
       local.checkAlInDB = checkAlInDB
 
 
-      state.uploadWarnState++
+      $modal.show('upload-warn')
     } else {
 
       uploadDataFromFileFinal(fileData, extension)
@@ -165,9 +136,9 @@ const uploadDataFromFileFinal = (fileData, extension) => {
 
 const uploadDataFromDB = async (alData) => {
   if (alData) {
-    state.waitingState++
+    $modal.show('waiting')
     const alignment = await $textC.uploadDataFromDB(alData)
-    state.waitingState++
+    $modal.hide('waiting')
     if (alignment instanceof Alignment) {
       return startOver(alignment)
     } else {
@@ -179,22 +150,22 @@ const uploadDataFromDB = async (alData) => {
 
 const deleteDataFromDB = async (alData) => {
   if (alData) {
-    state.waitingState++
+    $modal.show('waiting')
     const result = await $textC.deleteDataFromDB(alData)
-    state.waitingState++
+    $modal.hide('waiting')
     return result
   }
 }
 
 const clearAllAlignmentsFromDB = async () => {
-  state.waitingState++
+  $modal.show('waiting')
   const result = await $textC.clearAllAlignmentsFromDB()
-  state.waitingState++
+  $modal.hide('waiting')
   return result
 }
 
 const newInitialAlignment = () => {
-  state.createAlTitleState++ // open modal
+  $modal.show('createAlTitle')
 }
 
 const createANewAlignment = (alTitle) => {
@@ -239,7 +210,7 @@ const showSummaryPopup = async () => {
   if (!SettingsController.showSummaryPopup) {
     await alignTexts()
   } else {
-    state.summaryState++
+    $modal.show('summary')
   }
 }
 
@@ -302,9 +273,9 @@ const startOver = (alignment) => {
 }
 
 const alignTexts = async () => {
-  state.waitingState++
+  $modal.show('waiting')
   const result = await $alignedGC.createAlignedTexts($textC.alignment)
-  state.waitingState++
+  $modal.hide('waiting')
   if (result) {
     $tokensEC.loadAlignment($textC.alignment)
     showAlignmentGroupsEditor()

@@ -1,20 +1,22 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-language" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
-            <x-close-icon />
-        </span>
-    </div>
-    <div class="alpheios-modal-body">
-      <direction-options-block 
-        @updateText = "emit('updateText')" :localOptions = "props.localOptions" :disabled="!docSourceEditAvailable"  
-      />
+  <modal-base :modalName="modalName" :draggable="true" height="auto" :shiftY="0.3" >
+    <div class="alpheios-alignment-editor-modal-language" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">
+              <x-close-icon />
+          </span>
+      </div>
+      <div class="alpheios-modal-body">
+        <direction-options-block 
+          @updateText = "emit('updateText')" :localOptions = "props.localOptions" :disabled="!docSourceEditAvailable"  
+        />
 
-      <language-options-block :textType = "props.textType"
-        @updateText = "emit('updateText')" @updateDirection = "emit('updateDirection')" :localOptions = "props.localOptions" 
-      />
+        <language-options-block :textType = "props.textType"
+          @updateText = "emit('updateText')" @updateDirection = "emit('updateDirection')" :localOptions = "props.localOptions" 
+        />
+      </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import DirectionOptionsBlock from '@/vue/text-editor/modal_slots/direction-options-block.vue'
@@ -26,7 +28,9 @@ import { useStore } from 'vuex'
 
 const $store = useStore()
 const $textC = inject('$textC')
-const emit = defineEmits([ 'updateText', 'closeModal', 'updateDirection' ])
+const $modal = inject('$modal')
+
+const emit = defineEmits([ 'updateText', 'updateDirection' ])
 
 const props = defineProps({
   textType: {
@@ -41,6 +45,16 @@ const props = defineProps({
     type: Object,
     required: true
   }
+})
+
+const closeModal = () => {
+  $modal.hide(modalName.value)
+}
+
+const formattedTextId  = computed(() => props.textId ?? 'no-id' )
+
+const modalName = computed(() => {
+  return `language-${props.textType}-${formattedTextId.value}`
 })
 
 const docSourceEditAvailable = computed(() => {

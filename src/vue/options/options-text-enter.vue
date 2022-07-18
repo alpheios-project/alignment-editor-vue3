@@ -1,84 +1,86 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-options" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click="emit('closeModal')">
-            <x-close-icon />
-        </span>
-        <h2 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('OPTIONS_TITLE_TEXT_ENTER') }}</h2>
-    </div>
-    <div class="alpheios-modal-body" ref="modalBody">
-      <p class="alpheios-alignment-options__buttons">
-        <button class="alpheios-editor-button-tertiary alpheios-options-button alpheios-options-reset-all" 
-            @click="resetOptions" >
-            {{ l10n.getMsgS('OPTIONS_BLOCK_RESET_ALL') }}
-        </button>
-      </p>
-        <div class="alpheios-alignment-editor-modal-options-block">
-           
-            <p class="alpheios-alignment-options__expander-container" @click="setOptionsToAcademic">
-                <span class="alpheios-options-expander-label" >{{ l10n.getMsgS('OPTIONS_BLOCK_SET_ACADEMIC') }}
-                  <tooltip :tooltipText="l10n.getMsgS('OPTIONS_IS_ACADEMIC_MODE_INFO')" tooltipDirection="top">
-                    <span class="alpheios-alignment-option-item__label-info">?</span>
-                  </tooltip>  
-                  <i class="alpheios-arrow" :class="{ 'alpheios-up': !state.isAcademic, 'alpheios-down': state.isAcademic }"></i>
-                </span>
-            </p>
+  <modal-base modalName="options-enter" :draggable="true" height="auto" :shiftY="0.3" > 
+    <div class="alpheios-alignment-editor-modal-options" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click="closeModal">
+              <x-close-icon />
+          </span>
+          <h2 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('OPTIONS_TITLE_TEXT_ENTER') }}</h2>
+      </div>
+      <div class="alpheios-modal-body" ref="modalBody">
+        <p class="alpheios-alignment-options__buttons">
+          <button class="alpheios-editor-button-tertiary alpheios-options-button alpheios-options-reset-all" 
+              @click="resetOptions" >
+              {{ l10n.getMsgS('OPTIONS_BLOCK_RESET_ALL') }}
+          </button>
+        </p>
+          <div class="alpheios-alignment-editor-modal-options-block">
+            
+              <p class="alpheios-alignment-options__expander-container" @click="setOptionsToAcademic">
+                  <span class="alpheios-options-expander-label" >{{ l10n.getMsgS('OPTIONS_BLOCK_SET_ACADEMIC') }}
+                    <tooltip :tooltipText="l10n.getMsgS('OPTIONS_IS_ACADEMIC_MODE_INFO')" tooltipDirection="top">
+                      <span class="alpheios-alignment-option-item__label-info">?</span>
+                    </tooltip>  
+                    <i class="alpheios-arrow" :class="{ 'alpheios-up': !state.isAcademic, 'alpheios-down': state.isAcademic }"></i>
+                  </span>
+              </p>
 
-            <div class="alpheios-alignment-options__fieldset-group alpheios-alignment-options__fieldset-group_academic" 
-                 :class = "{ 'alpheios-collapsed': !state.isAcademic, 'alpheios-expanded': state.isAcademic, 'alpheios-academic-short': !enableTEXTXMLIconValue }">
-              <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
-                <option-item-block :optionItem = "enableDTSAPIUploadOptionItem" />
-                <option-item-block :optionItem = "showSummaryPopupOptionItem" 
-                    :optionInfo="getOptionInfo('showSummaryPopupOption')" />
-                <option-item-block :optionItem = "enableTEXTXMLIconOptionItem" 
-                    :optionInfo="getOptionInfo('enableTEXTXMLIconOption')" />
-                <option-item-block :optionItem = "enableTokenizationOptionsChoiceOptionItem" 
-                    :optionInfo="getOptionInfo('enableTokenizationOptionsChoiceOption')"
-                v-show = "enableTEXTXMLIconValue" />
-              </fieldset>
-            </div>
+              <div class="alpheios-alignment-options__fieldset-group alpheios-alignment-options__fieldset-group_academic" 
+                  :class = "{ 'alpheios-collapsed': !state.isAcademic, 'alpheios-expanded': state.isAcademic, 'alpheios-academic-short': !enableTEXTXMLIconValue }">
+                <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
+                  <option-item-block :optionItem = "enableDTSAPIUploadOptionItem" />
+                  <option-item-block :optionItem = "showSummaryPopupOptionItem" 
+                      :optionInfo="getOptionInfo('showSummaryPopupOption')" />
+                  <option-item-block :optionItem = "enableTEXTXMLIconOptionItem" 
+                      :optionInfo="getOptionInfo('enableTEXTXMLIconOption')" />
+                  <option-item-block :optionItem = "enableTokenizationOptionsChoiceOptionItem" 
+                      :optionInfo="getOptionInfo('enableTokenizationOptionsChoiceOption')"
+                  v-show = "enableTEXTXMLIconValue" />
+                </fieldset>
+              </div>
 
-            <p class="alpheios-alignment-options__expander-container" @click="setOptionsToAdvanced">
-                <span class="alpheios-options-expander-label" >{{ l10n.getMsgS('OPTIONS_BLOCK_SET_ADVANCED') }}
-                  <tooltip :tooltipText="l10n.getMsgS('OPTIONS_IS_ADVANCED_MODE_INFO')" tooltipDirection="top">
-                    <span class="alpheios-alignment-option-item__label-info">?</span>
-                  </tooltip>  
-                  <i class="alpheios-arrow" :class="{ 'alpheios-up': !state.isAdvanced, 'alpheios-down': state.isAdvanced }"></i>
-                </span>
-            </p>
+              <p class="alpheios-alignment-options__expander-container" @click="setOptionsToAdvanced">
+                  <span class="alpheios-options-expander-label" >{{ l10n.getMsgS('OPTIONS_BLOCK_SET_ADVANCED') }}
+                    <tooltip :tooltipText="l10n.getMsgS('OPTIONS_IS_ADVANCED_MODE_INFO')" tooltipDirection="top">
+                      <span class="alpheios-alignment-option-item__label-info">?</span>
+                    </tooltip>  
+                    <i class="alpheios-arrow" :class="{ 'alpheios-up': !state.isAdvanced, 'alpheios-down': state.isAdvanced }"></i>
+                  </span>
+              </p>
 
-            <div class="alpheios-alignment-options__fieldset-group alpheios-alignment-options__fieldset-group_advanced" 
-                 :class = "{ 'alpheios-collapsed': !state.isAdvanced, 'alpheios-expanded': state.isAdvanced }">
-             
-              <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
-                <option-item-block :optionItem = "enableChangeLanguageIconOptionItem" />
-              </fieldset>
+              <div class="alpheios-alignment-options__fieldset-group alpheios-alignment-options__fieldset-group_advanced" 
+                  :class = "{ 'alpheios-collapsed': !state.isAdvanced, 'alpheios-expanded': state.isAdvanced }">
+              
+                <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
+                  <option-item-block :optionItem = "enableChangeLanguageIconOptionItem" />
+                </fieldset>
 
 
-              <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
-                <option-item-block :optionItem = "tokenizerOptionItem" :optionInfo="getOptionInfo('tokenizerOptionItem')" />
-                <option-item-block :optionItem = "useSpecificEnglishTokenizerOptionItem" 
-                      :optionInfo="getOptionInfo('useSpecificEnglishTokenizer')" />
-              </fieldset>
+                <fieldset class="alpheios-alignment-editor-modal-options-block-fieldset">
+                  <option-item-block :optionItem = "tokenizerOptionItem" :optionInfo="getOptionInfo('tokenizerOptionItem')" />
+                  <option-item-block :optionItem = "useSpecificEnglishTokenizerOptionItem" 
+                        :optionInfo="getOptionInfo('useSpecificEnglishTokenizer')" />
+                </fieldset>
 
-              <fieldset  class="alpheios-alignment-editor-modal-options-block-fieldset">
-                <option-item-block :optionItem = "addIndexedDBSupportOptionItem" 
-                       :optionInfo="getOptionInfo('addIndexedDBSupport')" />
-                <option-item-block :optionItem = "maxCharactersOptionItem" v-show="!addIndexedDBSupportValue"/>
-                <option-item-block :optionItem = "maxCharactersPerPartOptionItem" v-show = "addIndexedDBSupportValue"/>
-              </fieldset>
-            </div>
-        </div>
-    </div>
-    <div class="alpheios-modal-footer" >
-      <div class="alpheios-alignment-options__aboutcont">
-        <h3>{{ l10n.getMsgS('OPTIONS_BLOCK_INFO_ABOUT') }}</h3>
-        <div class="alpheios-alignment-options__versiontext">
-          {{ $store.getters.libVersionData }}
+                <fieldset  class="alpheios-alignment-editor-modal-options-block-fieldset">
+                  <option-item-block :optionItem = "addIndexedDBSupportOptionItem" 
+                        :optionInfo="getOptionInfo('addIndexedDBSupport')" />
+                  <option-item-block :optionItem = "maxCharactersOptionItem" v-show="!addIndexedDBSupportValue"/>
+                  <option-item-block :optionItem = "maxCharactersPerPartOptionItem" v-show = "addIndexedDBSupportValue"/>
+                </fieldset>
+              </div>
+          </div>
+      </div>
+      <div class="alpheios-modal-footer" >
+        <div class="alpheios-alignment-options__aboutcont">
+          <h3>{{ l10n.getMsgS('OPTIONS_BLOCK_INFO_ABOUT') }}</h3>
+          <div class="alpheios-alignment-options__versiontext">
+            {{ $store.getters.libVersionData }}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import OptionItemBlock from '@/vue/options/option-item-block.vue'
@@ -96,7 +98,7 @@ const $store = useStore()
 const modalBody = ref(null)
 
 const l10n = computed(() => { return L10nSingleton })
-const emit = defineEmits([ 'closeModal' ])
+const $modal =  inject('$modal')
 
 const state = reactive({
   isAdvanced: false,
@@ -114,6 +116,9 @@ const state = reactive({
   }
 })
 
+const closeModal = () => {
+  $modal.hide('options-enter')
+}
 
 const themeOptionItem = computed(() => {
   return $store.state.optionsUpdated && SettingsController.allOptions.app.items.theme

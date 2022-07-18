@@ -1,52 +1,57 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-create-al-title">
-    <div class="alpheios-modal-header">
-        <span class="alpheios-alignment-modal-close-icon" @click="$emit('closeModal')">
-            <x-close-icon />
-        </span>
-        <h3 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT_TITLE') }}</h3>
+  <modal-base modalName = "createAlTitle" height="auto" :shiftY="0.3" >
+    <div class="alpheios-alignment-editor-modal-create-al-title">
+      <div class="alpheios-modal-header">
+          <span class="alpheios-alignment-modal-close-icon" @click="closeModal">
+              <x-close-icon />
+          </span>
+          <h3 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT_TITLE') }}</h3>
+      </div>
+      <div class="alpheios-modal-body">
+          <p class="alpheios-alignment-editor-file-name-value">
+              <input
+                  class="alpheios-alignment-input alpheios-file-name-value"
+                  type="text"
+                  v-model="state.alTitle"
+                  id="alpheios-file-name-al-title-id"
+                  @keyup.enter = "createAlignment"
+              >
+          </p>
+      </div>
+      <div class="alpheios-modal-footer" >
+          <div class="alpheios-editor-summary-footer" >
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
+                @click = "createAlignment" :disabled="!state.alTitle">{{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT') }}</button>
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
+                @click = "closeModal" >{{ l10n.getMsgS('UPLOAD_WARN_CANCEL_BUTTON') }}</button>
+          </div>
+      </div>
     </div>
-    <div class="alpheios-modal-body">
-        <p class="alpheios-alignment-editor-file-name-value">
-            <input
-                class="alpheios-alignment-input alpheios-file-name-value"
-                type="text"
-                v-model="state.alTitle"
-                id="alpheios-file-name-al-title-id"
-                @keyup.enter = "createAlignment"
-            >
-        </p>
-    </div>
-    <div class="alpheios-modal-footer" >
-        <div class="alpheios-editor-summary-footer" >
-        <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
-            @click = "createAlignment" :disabled="!state.alTitle">{{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT') }}</button>
-        <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
-            @click = "$emit('closeModal')" >{{ l10n.getMsgS('UPLOAD_WARN_CANCEL_BUTTON') }}</button>
-        </div>
-    </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 
-import { reactive, computed } from 'vue'
+import { reactive, computed, inject } from 'vue'
 
+const $modal = inject('$modal')
 const l10n = computed(() => { return L10nSingleton })
 
 const state = reactive({ 
   alTitle: null
 })
 
-const emit = defineEmits([ 'create-alignment', 'closeModal' ])
+const emit = defineEmits([ 'create-alignment' ])
 
 const createAlignment = () => {
   if (state.alTitle && (state.alTitle.length > 0)) {
     emit('create-alignment', state.alTitle)
-    emit('closeModal')
+    closeModal()
   }
 }
+
+const closeModal = () => { $modal.hide('createAlTitle') }
 
 </script>
 <style lang="scss">

@@ -1,8 +1,9 @@
 <template>
+  <modal-base modalName = "save"  :draggable="true" height="auto" @before-open="beforeOpen">
     <div class = "alpheios-alignment-editor-modal-save" data-alpheios-ignore="all"
     >
         <div class="alpheios-modal-header" >
-          <span class="alpheios-alignment-modal-close-icon" @click="emit('closeModal')">
+          <span class="alpheios-alignment-modal-close-icon" @click="closeModal">
               <x-close-icon />
           </span>
           <h2 class="alpheios-alignment-editor-modal-header">Save locally</h2>
@@ -39,9 +40,10 @@
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" 
                   @click="downloadData">Save</button>
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" 
-                  @click="emit('closeModal')">Close</button>
+                  @click="closeModal">Close</button>
         </div>
     </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
@@ -57,6 +59,7 @@ import { reactive, ref, inject, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const $store = useStore()
+const $modal = inject('$modal')
 
 const l10n = computed(() => { return L10nSingleton })
 const emit = defineEmits([ 'closeModal', 'toggleWaiting' ])
@@ -71,9 +74,12 @@ const state = reactive({
   fileName: ''
 })
 
+const closeModal = () => {
+  $modal.hide('save')
+}
+
 onMounted(() => {
   state.currentDownloadType = downloadTypes.value.length > 0 ? downloadTypes.value[0].name : null
-  beforeOpen()
 })
 
 const downloadTypes = computed(() => {
@@ -92,7 +98,7 @@ const beforeOpen = () => {
   const now = NotificationSingleton.timeNow.bind(new Date())()
   state.fileNameDate = now
   
-  state.fileNameTitle = titleName.value    
+  state.fileNameTitle = titleName.value  
 }
 
 const downloadTypeId = (dTypeName) => {
@@ -104,21 +110,23 @@ const downloadData = async () => {
 
   state.fileName = `${ state.fileNameDate }-${ state.fileNameTitle }`
 
-  emit('closeModal')
+  closeModal()
   
+  $modal.show('waiting')
   let additional = {}
   if (state.currentDownloadType === 'htmlDownloadAll') {
     additional = {
       theme: SettingsController.themeOptionValue
     }
   }
-  
-  emit('toggleWaiting')
-  console.info('SaveP - toggleWaiting - open')
-  const result = await $textC.downloadData(state.currentDownloadType, additional, state.fileName)
-  emit('toggleWaiting')
-  console.info('SaveP - toggleWaiting - close')
-  return result
+
+  try {
+    const result = await $textC.downloadData(state.currentDownloadType, additional, state.fileName)
+  } catch (err) {
+    console.error(err)
+  }
+  $modal.hide('waiting')
+  return true
 }
 
 </script>

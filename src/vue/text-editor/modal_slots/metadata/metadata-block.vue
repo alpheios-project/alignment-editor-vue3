@@ -1,41 +1,43 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-metadata" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
-            <x-close-icon />
-        </span>
-    </div>
-    <div class="alpheios-modal-body" v-if="allMetadata">
-      <div class="alpheios-alignment-editor-metadata" >
-        <div class="alpheios-alignment-editor-metadata__group__common" >
-          <metadata-term-block 
-            v-for="metadataTerm in commonMetadata.items" :key="metadataTerm.key"
-            :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
-        </div>
-        <div class="alpheios-alignment-editor-metadata__group__titles" >
-          <div class = "alpheios-alignment-editor-metadata__group__title" 
-               v-for="(metaGroup, metaGroupIndex) in allMetadataGroupData" :key="constructKey(metaGroupIndex, 1)" 
-               :class = "{ 'alpheios-alignment-editor-metadata__group__title_inactive': state.activeGroup !== metaGroup.key }" 
-               @click = "changeActiveGroup(metaGroup)" >
-            {{ metaGroup.label }}
+  <modal-base :modalName="props.modalName"  :draggable="true" height="auto" :shiftY="0.2" >   
+    <div class="alpheios-alignment-editor-modal-metadata" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">
+              <x-close-icon />
+          </span>
+      </div>
+      <div class="alpheios-modal-body" v-if="allMetadata">
+        <div class="alpheios-alignment-editor-metadata" >
+          <div class="alpheios-alignment-editor-metadata__group__common" >
+            <metadata-term-block 
+              v-for="metadataTerm in commonMetadata.items" :key="metadataTerm.key"
+              :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
           </div>
-          <a class="alpheios-alignment-editor-metadata-group__label-help" target="_blank" 
-              href = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/"
-              v-show="state.activeGroup === 'dublin'"
-          >?</a>
-        </div>
-        
-        <metadata-info v-show="state.activeGroup === 'dublin'"/>
-        <div class="alpheios-alignment-editor-metadata__group__items" 
-             v-show = "state.activeGroup === metaGroup.key"
-             v-for="(metaGroup, metaGroupIndex) in allMetadataGroupData" :key="constructKey(metaGroupIndex, 2)" >
-          <metadata-term-block 
-            v-for="metadataTerm in metaGroup.items" :key="metadataTerm.key"
-            :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
+          <div class="alpheios-alignment-editor-metadata__group__titles" >
+            <div class = "alpheios-alignment-editor-metadata__group__title" 
+                v-for="(metaGroup, metaGroupIndex) in allMetadataGroupData" :key="constructKey(metaGroupIndex, 1)" 
+                :class = "{ 'alpheios-alignment-editor-metadata__group__title_inactive': state.activeGroup !== metaGroup.key }" 
+                @click = "changeActiveGroup(metaGroup)" >
+              {{ metaGroup.label }}
+            </div>
+            <a class="alpheios-alignment-editor-metadata-group__label-help" target="_blank" 
+                href = "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/"
+                v-show="state.activeGroup === 'dublin'"
+            >?</a>
+          </div>
+          
+          <metadata-info v-show="state.activeGroup === 'dublin'"/>
+          <div class="alpheios-alignment-editor-metadata__group__items" 
+              v-show = "state.activeGroup === metaGroup.key"
+              v-for="(metaGroup, metaGroupIndex) in allMetadataGroupData" :key="constructKey(metaGroupIndex, 2)" >
+            <metadata-term-block 
+              v-for="metadataTerm in metaGroup.items" :key="metadataTerm.key"
+              :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import MetadataTermBlock from '@/vue/text-editor/modal_slots/metadata/metadata-term-block.vue'
@@ -51,7 +53,7 @@ import { useStore } from 'vuex'
 
 const $store = useStore()
 const $textC = inject('$textC')
-const emit = defineEmits([ 'closeModal' ])
+const $modal = inject('$modal')
 
 const props = defineProps({
   textType: {
@@ -61,12 +63,20 @@ const props = defineProps({
   textId: {
     type: String,
     required: false
+  },
+  modalName: {
+    type: String,
+    required: true
   }
 })
 
 const state = reactive({
   activeGroup: null
 })
+
+const closeModal = () => {
+  $modal.hide(props.modalName)
+}
 
 const docSource = computed(() => {
   return $textC.getDocSource(props.textType, props.textId)

@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "intl-messageformat": "^10.0.1",
+    "mitt": "^3.0.0",
     "vue": "^3.2.36",
     "vue-multiselect": "^3.0.0-alpha.2",
     "vuedraggable": "^4.1.0",

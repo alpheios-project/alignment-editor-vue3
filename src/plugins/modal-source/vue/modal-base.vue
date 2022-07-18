@@ -27,20 +27,20 @@
           aria-modal="true"
       >
           <div class="vue-modal-content">
-              <slot @toggleWaiting = "emit('toggleWaiting')" />
+              <slot />
           </div>
       </div>
     </Transition>
   </div>
 </template>
 <script>
-import { parseNumber, validateNumber, windowWidthWithoutScrollbar, getTouchEvent, isInput, inRange } from '@/vue/modal-base/utils.js'
+import { parseNumber, validateNumber, windowWidthWithoutScrollbar, getTouchEvent, isInput, inRange } from '@/plugins/modal-source/utils.js'
 
-import { onBeforeMount, onMounted, onBeforeUnmount, reactive, ref, computed, toRefs, watchEffect, watch, nextTick } from 'vue'
+import { inject, onBeforeMount, onMounted, onBeforeUnmount, reactive, ref, computed, toRefs, watchEffect, watch, nextTick } from 'vue'
 
 export default {
   props: {
-    name: {
+    modalName: {
       required: true,
       type: String
     },
@@ -110,13 +110,25 @@ export default {
     draggable: {
       type: [Boolean, String],
       default: true
-    },
-    toggleState: {
-      type: Number,
-      default: 0
     }
   },
     setup (props, { emit }) {
+
+    const $modal = inject('$modal')
+
+    $modal.on('showModal', (data) => {
+      if (props.modalName === data.modalName) {
+        console.info('showModal - ', props.modalName)
+        onToggle(true, data)
+      }
+    })
+
+    $modal.on('hideModal', (data) => {
+      if (props.modalName === data.modalName) {
+        onToggle(false, data)
+      }
+    })
+
     const state = reactive({ 
       visible: false,
 
@@ -157,7 +169,14 @@ export default {
     onMounted(() => {
       state.viewportWidth = windowWidthWithoutScrollbar()
       state.viewportHeight = window.innerHeight
+
+      window.addEventListener('resize', onWindowResize)
     })
+
+    const onWindowResize = () => {
+      state.viewportWidth = windowWidthWithoutScrollbar()
+      state.viewportHeight = window.innerHeight
+    }
 
     
     const setInitialSize = () => {
@@ -275,6 +294,12 @@ export default {
       }
     }
 
+    const onToggle = (state, params) => {      
+      const nextState = typeof state === 'undefined' ? !state.visible : state
+
+      toggle(nextState, params)
+    }
+
     const toggle = (isOpening, params) => {
       const { visible } = state
 
@@ -312,6 +337,8 @@ export default {
       const cancel = () => {
         cancelEvent = true
       }
+
+      emit('before-open')
 
       if (cancelEvent) {
         return
@@ -368,10 +395,6 @@ export default {
         state.overlayTransitionState === TransitionState.Leave &&
         state.modalTransitionState === TransitionState.Leave
       )
-    })
-
-    watch(() => props.toggleState, () => {
-      toggle(!state.visible)
     })
 
     watchEffect (() => {

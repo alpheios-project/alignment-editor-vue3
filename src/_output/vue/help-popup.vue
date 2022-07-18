@@ -1,7 +1,8 @@
 <template>
+  <modal-base modalName="help-output" :draggable="true" height="auto" :shiftY="0.3" > 
     <div class="alpheios-alignment-editor-modal-help ">
         <div class="alpheios-modal-header" >
-          <span class="alpheios-alignment-modal-close-icon" @click="emit('closeModal')">
+          <span class="alpheios-alignment-modal-close-icon" @click="$modal.hide('help-output')">
               <x-close-icon />
           </span>
           <h2 class="alpheios-alignment-editor-modal-header">Help</h2>
@@ -17,19 +18,17 @@
           </div>
         </div>
     </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
 
 import { computed, reactive, inject, onMounted, watch } from 'vue'
-
-const emit = defineEmits([ 'closeModal' ])
+const $modal = inject('$modal')
 
 </script>
 <style lang="scss">
 .alpheios-alignment-editor-modal-help {
-  overflow: auto;
-
   .alpheios-alignment-modal-close-icon {
     top: -25px;
     right: -10px;

@@ -10,7 +10,7 @@
       <span class="alpheios-alignment-text-editor-block-buttons__part">
         <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_HELP')" tooltipDirection = "top">
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" 
-                  id="alpheios-actions-menu-button__enter-help" @click="state.helpEnterState++"
+                  id="alpheios-actions-menu-button__enter-help" @click="$modal.show('help-enter')"
               >
               <span class="alpheios-alignment-button-icon">
                 <question-icon />
@@ -19,7 +19,7 @@
         </tooltip>
         <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_OPTIONS')" tooltipDirection = "top">
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-options"
-              @click="state.optionsTextEnterState++"
+              @click="$modal.show('options-enter')"
               >
               <span class="alpheios-alignment-button-icon">
                 <gear-icon />
@@ -30,7 +30,7 @@
 
       <span class="alpheios-alignment-text-editor-block__part alpheios-alignment-text-editor-block__part-right">
         <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" id="alpheios-actions-menu-button__enter-save"
-            :disabled="!downloadAvailable" @click="emit('toggle-save')">
+            :disabled="!downloadAvailable" @click="$modal.show('save')">
             {{ l10n.getMsgS('TEXT_EDITOR_HEADER_SAVE') }}
         </button>
       </span>
@@ -77,21 +77,11 @@
       </div>
     </div>
 
-    <modal name="help-enter" :toggleState="state.helpEnterState" 
-          height="80%" width="80%" :shiftY="0.3"
-          :max-width="1300" :adaptive="true">     
-      <help-popup @closeModal = "state.helpEnterState++" mname = "help-enter">
-        <template v-slot:content > <help-block-enter /> </template>
-      </help-popup>
-    </modal>
-
-    <modal name="options-enter" :toggleState="state.optionsTextEnterState" 
-          :draggable="true" height="auto" :shiftY="0.3" >   
-      <options-text-enter @closeModal = "state.optionsTextEnterState++" />
-    </modal>
-
-
-
+    <help-popup modalName = "help-enter">
+      <template v-slot:content > <help-block-enter /> </template>
+    </help-popup>
+  
+    <options-text-enter />
   </div>
 </template>
 <script setup>
@@ -104,10 +94,7 @@ import SettingsController from '@/lib/controllers/settings-controller.js'
 import HelpPopup from '@/vue/modal-slots/help-popup.vue'
 
 import HelpBlockEnter from '@/vue/help-blocks/eng/help-block-enter.vue'
-import Modal from '@/vue/modal-base/modal.vue'
 import OptionsTextEnter from '@/vue/options/options-text-enter.vue'
-
-
 
 import TextEditorSingleBlock from '@/vue/text-editor/text-editor-single-block.vue'
 
@@ -119,12 +106,12 @@ const emit = defineEmits([ 'showAlignmentGroupsEditor', 'showTokensEditor', 'add
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
 
+const $modal = inject('$modal')
+
 const $textC = inject('$textC')
 const $alignedGC = inject('$alignedGC')
 
 const state = reactive({ 
-  helpEnterState: 0,
-  optionsTextEnterState: 0,
   saveEnterState: 0
 })
 

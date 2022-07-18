@@ -33,7 +33,7 @@
               <div class="alpheios-alignment-editor-container-question-button">
                 <tooltip tooltipText = "Help" tooltipDirection = "left">
                     <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-help"
-                        @click="state.helpEnterState++" >
+                        @click="$modal.show('help-output')" >
                         <span class="alpheios-alignment-button-icon">
                         <question-icon />
                         </span>
@@ -63,11 +63,8 @@
 <!--
         <annotation-block />
 -->
-    <modal name="help-enter" :toggleState="state.helpEnterState" 
-          :shiftY="0.3" >     
-      <help-popup @closeModal = "state.helpEnterState++" />
-    </modal>
-
+    
+    <help-popup  />
     </div>
 </template>
 <script setup>
@@ -91,8 +88,6 @@ import HelpPopup from '@/_output/vue/help-popup.vue'
 import MainMenu from '@/_output/vue/main-menu.vue'
 import SelectViews from '@/_output/vue/select-views.vue'
 
-import Modal from '@/vue/modal-base/modal.vue'
-
 import NavbarIcon from '@/_output/inline-icons/navbar.svg'
 
 import ImagesConverted from '@/_output/data/images-converted.js'
@@ -100,6 +95,7 @@ import ImagesConverted from '@/_output/data/images-converted.js'
 import { computed, reactive, inject, onMounted } from 'vue'
 
 const $fullData = inject('$fullData')
+const $modal = inject('$modal')
 
 const state = reactive({
   viewType: 'viewFull',
@@ -124,9 +120,7 @@ const state = reactive({
   ],
 
   alpheiosLogoOnlyPNG: ImagesConverted.alpheiosLogoOnlyPNG,
-  alpheiosLogoBlackPNG: ImagesConverted.alpheiosLogoBlackPNG,
-
-  helpEnterState: 0
+  alpheiosLogoBlackPNG: ImagesConverted.alpheiosLogoBlackPNG
 })
 
 onMounted(() => {

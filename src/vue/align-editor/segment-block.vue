@@ -8,7 +8,7 @@
             <span class="alpheios-alignment-editor-align-text-segment-row__langname" >{{ segment.langName }}</span>
             
             <metadata-icons :text-type = "props.textType" :text-id = "segment.docSourceId" 
-            @showModalMetadata = "state.metadataState++"/>
+            @showModalMetadata = "$modal.show(modalNameMetadata)"/>
           </p>
 
           <p class="alpheios-alignment-editor-align-text-parts" v-if="allPartsKeys.length > 1">
@@ -49,11 +49,9 @@
             </p>
           </div>
 
-          <modal name="metadata" :toggleState="state.metadataState" 
-                :draggable="true" height="auto" :shiftY="0.2" >   
-            <metadata-block :text-type = "props.textType" :text-id = "segment.docSourceId" v-if="props.isFirst"
-                      @closeModal = "state.metadataState++"   />
-          </modal>
+          
+        <metadata-block :modalName = "modalNameMetadata"
+           :text-type = "props.textType" :text-id = "segment.docSourceId" v-if="props.isFirst" />
     </div>
 </template>
 <script setup>
@@ -67,7 +65,6 @@ import Tooltip from '@/vue/common/tooltip.vue'
 
 import MetadataBlock from '@/vue/text-editor/modal_slots/metadata/metadata-block.vue'
 import MetadataIcons from '@/vue/common/metadata-icons.vue'
-import Modal from '@/vue/modal-base/modal.vue'
 
 import { computed, inject, reactive, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
@@ -77,6 +74,8 @@ const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
 const $textC = inject('$textC')
 const $alignedGC = inject('$alignedGC')
+
+const $modal = inject('$modal')
 
 const emit = defineEmits([ 'update-annotation' ])
 
@@ -139,14 +138,19 @@ const state = reactive({
   showUpDown: false,
   minMaxHeight: 500,
   showModalMetadata: false,
-  currentPartIndexes: [ 1 ],
-  
-  metadataState: 0
+  currentPartIndexes: [ 1 ]
 })
 
 
 const segment = computed(() => {
   return $store.state.reuploadTextsParts && $textC.getSegment(props.textType, props.textId, props.segmentIndex)
+})
+
+const formattedTextId  = computed(() => props.textId ?? 'no-id' )
+const formattedPrefix = computed(() => `${props.textType}-${formattedTextId.value}`)
+
+const modalNameMetadata = computed(() => {
+  return `metadata-${formattedPrefix.value}-${props.segmentIndex}`
 })
 
 const direction = computed(() => {
@@ -352,6 +356,9 @@ const updateAnnotation = (token) => {
   emit('update-annotation', token)
 }
 
+const showModalMetadata = () => {
+  
+}
 </script>
 
 <style lang="scss">

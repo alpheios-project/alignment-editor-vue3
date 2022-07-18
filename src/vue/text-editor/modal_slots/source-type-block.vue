@@ -1,16 +1,18 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-source-type" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
-            <x-close-icon />
-        </span>
+  <modal-base :modalName="modalName" :draggable="true" height="auto" :shiftY="0.3" >
+    <div class="alpheios-alignment-editor-modal-source-type" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">
+              <x-close-icon />
+          </span>
+      </div>
+      <div class="alpheios-modal-body">
+        <tokenize-options-block v-if="hasTokenizerOptionsValue" 
+          @updateText = "emit('updateText')" :localOptions = "props.localOptions" :disabled="!docSourceEditAvailable"  
+        />
+      </div>
     </div>
-    <div class="alpheios-modal-body">
-      <tokenize-options-block v-if="hasTokenizerOptionsValue" 
-        @updateText = "emit('updateText')" :localOptions = "props.localOptions" :disabled="!docSourceEditAvailable"  
-      />
-    </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import TokenizeOptionsBlock from '@/vue/text-editor/modal_slots/tokenize-options-block.vue'
@@ -22,8 +24,9 @@ import { useStore } from 'vuex'
 
 const $store = useStore()
 const $textC = inject('$textC')
+const $modal = inject('$modal')
 
-const emit = defineEmits([ 'updateText', 'closeModal' ])
+const emit = defineEmits([ 'updateText' ])
 const props = defineProps({
   textType: {
     type: String,
@@ -37,6 +40,16 @@ const props = defineProps({
     type: Object,
     required: true
   }
+})
+
+const closeModal = () => {
+  $modal.hide(modalName.value)
+}
+
+const formattedTextId  = computed(() => props.textId ?? 'no-id' )
+
+const modalName = computed(() => {
+  return `source-type-${props.textType}-${formattedTextId.value}`
 })
 
 const docSourceEditAvailable = computed(() => {

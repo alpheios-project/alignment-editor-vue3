@@ -35,7 +35,7 @@
           <span class="alpheios-fileupload-label-filename" v-if="state.uploadFile">{{ state.uploadFile }}</span>
 
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-fileupload-dtsapi" id="alpheios-actions-menu-button__metadata"
-              @click="state.uploadDTSState++" v-if="enableDTSAPIUploadValue">
+              @click="$modal.show(modalNameDTSAPI)" v-if="enableDTSAPIUploadValue">
               DTSAPI
           </button>
       </div>
@@ -48,7 +48,7 @@
                 :class="sourceTypeIconClass" v-show="enableTEXTXMLIconValue && state.showTextProps" 
                 @click="clickSourceType"> {{ formattedSourceType }} </span>
           <span class="alpheios-alignment-editor-text-blocks-single__lang-icon" v-show="enableChangeLanguageIconValue && state.showTextProps" 
-                @click="state.languageState++"> 
+                @click="$modal.show(modalNameLanguage)"> 
                     {{ language }} 
           </span>
           <span class="alpheios-alignment-editor-text-blocks-single__icons" v-show="enableChangeLanguageIconValue && showLangNotDetected">
@@ -58,10 +58,11 @@
           </span>
 
           <metadata-icons :text-type = "props.textType" :text-id = "props.textId" 
-                           @showModalMetadata = "state.metadataState++" />
+                           @showModalMetadata = "$modal.show(modalNameMetadata)" />
       
         </p>
-        <span :id="removeId" class="alpheios-alignment-editor-text-blocks-single__remove" v-show="showDeleteIcon" @click="deleteText">
+        <span :id="removeId" class="alpheios-alignment-editor-text-blocks-single__remove" 
+              v-show="showDeleteIcon" @click="deleteText">
           <x-close-icon />
         </span>
         <textarea :id="textareaId" v-model="state.text" :dir="direction" tabindex="2" :lang="language" 
@@ -73,38 +74,26 @@
 
       <div class="alpheios-alignment-editor-text-blocks-single__describe-button" >
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button"  :id="describeButtonId"
-              @click="state.metadataState++" :disabled="!isMetadataAvailable" >
+              @click="$modal.show(modalNameMetadata)" :disabled="!isMetadataAvailable" >
               {{ l10n.getMsgS('DESCRIBE_BUTTON_TITLE') }}
           </button>
       </div>
 
 
-      <modal name="source-type" :toggleState="state.sourceTypeState" 
-            :draggable="true" height="auto" :shiftY="0.3" >   
-        <source-type-block :text-type = "props.textType" :text-id = "props.textId" 
-                  :localOptions = "updatedLocalOptions" @updateText = "updateText" 
-                  @closeModal = "state.sourceTypeState++"  />
-      </modal>
+ 
+      <source-type-block :text-type = "props.textType" :text-id = "props.textId" 
+            :localOptions = "updatedLocalOptions" @updateText = "updateText" 
+        />
 
-      <modal name="language" :toggleState="state.languageState" 
-            :draggable="true" height="auto" :shiftY="0.3" >   
-        <language-direction-block :text-type = "props.textType" :text-id = "props.textId" :localOptions = "updatedLocalOptions" 
+      <language-direction-block :text-type = "props.textType" :text-id = "props.textId" :localOptions = "updatedLocalOptions" 
                         @updateText = "updateText" @updateDirection = "updateDirection"
-                        @closeModal = "state.languageState++"  />
-      </modal>
+        />
 
-      <modal name="metadata" :toggleState="state.metadataState" 
-            :draggable="true" height="auto" :shiftY="0.2" >   
-        <metadata-block :text-type = "props.textType" :text-id = "props.textId" 
-                  @closeModal = "state.metadataState++"   />
-      </modal>
+      <metadata-block :text-type = "props.textType" :text-id = "props.textId" :modalName = "modalNameMetadata"
+        />
+      
+      <upload-dtsapi-block @uploadFromDTSAPI = "uploadFromDTSAPI" :modalName="modalNameDTSAPI"  />
 
-      <modal name="dtsapi" :toggleState="state.uploadDTSState" 
-            :draggable="true" height="auto" :shiftY="0.2" :clickToClose="!state.showWaitingUpload">   
-
-        <upload-dtsapi-block @closeModal = "state.uploadDTSState++" 
-              @uploadFromDTSAPI = "uploadFromDTSAPI" @updateShowWaiting = "updateShowWaiting"   />
-      </modal>
   </div>
 </template>
 <script setup>
@@ -116,7 +105,6 @@ import NoLangDetectedIcon from '@/inline-icons/no-lang-detected.svg'
 import PlusIcon from '@/inline-icons/plus.svg'
 import MetadataIcons from '@/vue/common/metadata-icons.vue'
 
-import Modal from '@/vue/modal-base/modal.vue'
 import SourceTypeBlock from '@/vue/text-editor/modal_slots/source-type-block.vue'
 import LanguageDirectionBlock from '@/vue/text-editor/modal_slots/language-direction-block.vue'
 import MetadataBlock from '@/vue/text-editor/modal_slots/metadata/metadata-block.vue'
@@ -135,6 +123,8 @@ const emit = defineEmits([ 'add-translation', 'align-text' ])
 
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
+
+const $modal = inject('$modal')
 
 const props = defineProps({
   textType: {
@@ -163,14 +153,7 @@ const state = reactive({
   showUploadMenu: false,
   
   updatedLocalOptionsFlag: 1,
-  uploadFile: '',
-
-  sourceTypeState: 0,
-  languageState: 0,
-  metadataState: 0,
-  uploadDTSState: 0,
-
-  showWaitingUpload: false
+  uploadFile: ''
 })
 
 
@@ -231,6 +214,19 @@ watch(
 const formattedTextId  = computed(() => props.textId ?? 'no-id' )
 const formattedPrefix = computed(() => `${props.textType}-${formattedTextId.value}`)
 
+
+const modalNameSourceType = computed(() => {
+  return `source-type-${formattedPrefix.value}`
+})
+const modalNameLanguage = computed(() => {
+  return `language-${formattedPrefix.value}`
+})
+const modalNameMetadata = computed(() => {
+  return `metadata-${formattedPrefix.value}`
+})
+const modalNameDTSAPI = computed(() => {
+  return `dtsapi-${formattedPrefix.value}`
+})
 
 const fileUploadId = computed(() => `fileupload-${formattedPrefix.value}` )
 
@@ -376,7 +372,7 @@ const docSourceEditAvailable = computed(() => {
 })
 
 const showDeleteIcon = computed(() => {
-  return docSourceEditAvailable.value && (showIndex.value || (props.text && (props.text.length > 0)))
+  return docSourceEditAvailable.value && (showIndex.value || (state.text && (state.text.length > 0)))
 })
 
 const showLangNotDetected = computed(() => {
@@ -496,7 +492,7 @@ const uploadSingle = async (fileData) => {
 
 const clickSourceType = () => {
   if (!sourceTypeDisabled.value) {
-    state.sourceTypeState++
+    $modal.show(modalNameSourceType.value)
   }
 }
 
@@ -576,9 +572,6 @@ const uploadFromDTSAPI = (filedata) => {
   state.showUploadMenu = false
 }
 
-const updateShowWaiting = (value) => {
-  state.showWaitingUpload = value
-}
 </script>
 
 <style lang="scss">

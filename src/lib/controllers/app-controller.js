@@ -17,6 +17,8 @@ import SettingsController from '@/lib/controllers/settings-controller.js'
 import StorageController from '@/lib/controllers/storage-controller.js'
 import AnnotationsController from '@/lib/controllers/annotations-controller.js'
 
+import ModalPlugin from '@/plugins/modal'
+
 export default class AppController {
   constructor ({ appId } = {}) {
     if (!appId) {
@@ -87,6 +89,7 @@ export default class AppController {
     this.defineAnnotationsController()
 
     this.app.use(this.store)
+    this.app.use(ModalPlugin)
     this.app.mount(`#${this.pageSettings.appId}`) 
 
     this.defineEvents()
