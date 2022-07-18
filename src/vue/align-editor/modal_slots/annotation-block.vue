@@ -1,73 +1,75 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-annotations" :draggable="true" height="auto" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" v-if="props.token">
-        <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
-            <x-close-icon />
-        </span>
-        <h3 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('ANNOTATION_BLOCK_HEADER', { word: props.token.word }) }}</h3>
-        <p class="alpheios-alignment-annotations-header__buttons" >
-          <button class="alpheios-editor-button-tertiary alpheios-annotation-save-button"  v-show="state.currentState !== 'list' && hasAnnotations"
-              @click="showAnnotationsJournal" >
-              {{ l10n.getMsgS('ANNOTATION_BLOCK_SHOW_LIST', { count: countAnnotations }) }}              
-          </button>
-          <button class="alpheios-editor-button-tertiary alpheios-annotation-add-button" v-show="state.currentState !== 'new'"
-              @click="showNewAnnotation" >
-              {{ l10n.getMsgS('ANNOTATION_BLOCK_ADD_ANNOTATION') }}              
-          </button>
-        </p>
-    </div>
-
-    <div class="alpheios-modal-body" v-if="props.token">
-      <div class = "alpheios-alignment-editor-annotation-new" v-show="state.currentState !== 'list'">
-        <div class="alpheios-alignment-editor-annotation-select">
-            <select class="alpheios-alignment-select" v-model="state.annotationType">
-                <option v-for="(anType, anIndex) in annotationTypes" :key="anIndex" :value="anType">{{ annotationTypeValue(anType) }}</option>
-            </select>
-        </div>
-
-
-        <div class="alpheios-alignment-editor-annotation-text-block">
-            <p class="alpheios-alignment-editor-text-blocks-info-line">
-              <span class="alpheios-alignment-editor-text-blocks-single__characters" :class = "charactersClasses">{{ charactersText }}</span>
-            </p>
-            <textarea :id="textareaId" v-model="state.annotationText" 
-                class="alpheios-alignment-editor-annotation-textarea">
-            </textarea>
-        </div>
+  <modal-base modalName="annotation" :draggable="true" height="auto" :shiftY="0.3" > 
+    <div class="alpheios-alignment-editor-modal-annotations" :draggable="true" height="auto" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" v-if="props.token">
+          <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">
+              <x-close-icon />
+          </span>
+          <h3 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('ANNOTATION_BLOCK_HEADER', { word: props.token.word }) }}</h3>
+          <p class="alpheios-alignment-annotations-header__buttons" >
+            <button class="alpheios-editor-button-tertiary alpheios-annotation-save-button"  v-show="state.currentState !== 'list' && hasAnnotations"
+                @click="showAnnotationsJournal" >
+                {{ l10n.getMsgS('ANNOTATION_BLOCK_SHOW_LIST', { count: countAnnotations }) }}              
+            </button>
+            <button class="alpheios-editor-button-tertiary alpheios-annotation-add-button" v-show="state.currentState !== 'new'"
+                @click="showNewAnnotation" >
+                {{ l10n.getMsgS('ANNOTATION_BLOCK_ADD_ANNOTATION') }}              
+            </button>
+          </p>
       </div>
 
+      <div class="alpheios-modal-body" v-if="props.token">
+        <div class = "alpheios-alignment-editor-annotation-new" v-show="state.currentState !== 'list'">
+          <div class="alpheios-alignment-editor-annotation-select">
+              <select class="alpheios-alignment-select" v-model="state.annotationType">
+                  <option v-for="(anType, anIndex) in annotationTypes" :key="anIndex" :value="anType">{{ annotationTypeValue(anType) }}</option>
+              </select>
+          </div>
 
-      <table class = "alpheios-alignment-editor-annotation-list" v-show="state.currentState === 'list'">
-        <tr class="alpheios-alignment-editor-annotation-list-item" 
-            v-for="annotation in allAnnotations" :key="annotation.id"
-            :class = "annotationClass(annotation)"
-          >
-          <td class="alpheios-alignment-editor-annotation-list-item__type">
-            {{ annotationTypeValue(annotation.type) }}
-          </td>
-          <td class="alpheios-alignment-editor-annotation-list-item__type">
-            {{ annotation.index }}
-          </td>
-          <td class="alpheios-alignment-editor-annotation-list-item__text">
-            <span @click = "toggleAnnotationText(annotation.id)">{{ annotation.text }}</span>
-          </td>
-          <td class="alpheios-alignment-editor-annotation-list-item__edit">
-            <span @click = "editAnnotation(annotation)" v-if="isAnnotationEditable(annotation)"><pen-icon /></span>
-            <span @click = "deleteAnnotation(annotation)" v-if="isAnnotationEditable(annotation)"><delete-icon /></span>
-          </td>
-        </tr>
-      </table>
-    </div>
 
-    <div class="alpheios-modal-footer" v-if="props.token">
-      <p class="alpheios-alignment-annotations-footer__buttons" v-show = "state.currentState !== 'list'">
-        <button class="alpheios-editor-button-tertiary alpheios-annotation-save-button" 
-            @click="saveAnnotation" :disabled="textCharactersAmount > maxCharactersForTheText">
-            {{ l10n.getMsgS('ANNOTATION_BLOCK_SAVE_BUTTON') }}
-        </button>
-      </p>
+          <div class="alpheios-alignment-editor-annotation-text-block">
+              <p class="alpheios-alignment-editor-text-blocks-info-line">
+                <span class="alpheios-alignment-editor-text-blocks-single__characters" :class = "charactersClasses">{{ charactersText }}</span>
+              </p>
+              <textarea :id="textareaId" v-model="state.annotationText" 
+                  class="alpheios-alignment-editor-annotation-textarea">
+              </textarea>
+          </div>
+        </div>
+
+
+        <table class = "alpheios-alignment-editor-annotation-list" v-show="state.currentState === 'list'">
+          <tr class="alpheios-alignment-editor-annotation-list-item" 
+              v-for="annotation in allAnnotations" :key="annotation.id"
+              :class = "annotationClass(annotation)"
+            >
+            <td class="alpheios-alignment-editor-annotation-list-item__type">
+              {{ annotationTypeValue(annotation.type) }}
+            </td>
+            <td class="alpheios-alignment-editor-annotation-list-item__type">
+              {{ annotation.index }}
+            </td>
+            <td class="alpheios-alignment-editor-annotation-list-item__text">
+              <span @click = "toggleAnnotationText(annotation.id)">{{ annotation.text }}</span>
+            </td>
+            <td class="alpheios-alignment-editor-annotation-list-item__edit">
+              <span @click = "editAnnotation(annotation)" v-if="isAnnotationEditable(annotation)"><pen-icon /></span>
+              <span @click = "deleteAnnotation(annotation)" v-if="isAnnotationEditable(annotation)"><delete-icon /></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="alpheios-modal-footer" v-if="props.token">
+        <p class="alpheios-alignment-annotations-footer__buttons" v-show = "state.currentState !== 'list'">
+          <button class="alpheios-editor-button-tertiary alpheios-annotation-save-button" 
+              @click="saveAnnotation" :disabled="textCharactersAmount > maxCharactersForTheText">
+              {{ l10n.getMsgS('ANNOTATION_BLOCK_SAVE_BUTTON') }}
+          </button>
+        </p>
+      </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
@@ -83,11 +85,10 @@ import { computed, inject, reactive } from 'vue'
 
 import { useStore } from 'vuex'
 
-const emit = defineEmits([ 'closeModal' ])
-
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
 
+const $modal = inject('$modal')
 const $textC = inject('$textC')
 const $alignedGC = inject('$alignedGC')
 
@@ -106,6 +107,10 @@ const state = reactive({
   currentState: 'new',
   fullTextAnnotations: []
 })
+
+const closeModal = () => {
+  $modal.hide('annotation')
+}
 
 const textareaId = computed(() => {
   defineCurrentState()

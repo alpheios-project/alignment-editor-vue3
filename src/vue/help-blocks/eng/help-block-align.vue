@@ -1,20 +1,21 @@
 <template>
-  <div class="alpheios-editor-help-content-container" data-alpheios-ignore="all">
-    <help-align-part1 />
-    <help-align-part2 />
-    <help-align-part3 />
-    <help-align-part4 />
-    <help-align-part5 />
-    <help-align-part6 />
-    <help-align-part7 />
-    <help-align-part8 />
-    <help-align-part9 />
-    <help-align-part10 />
-    <help-align-part11 />
-    <help-align-part12 />
-    <help-align-part13 />
-    <help-align-part14 />
-  </div>
+    <div class="alpheios-editor-help-content-container" data-alpheios-ignore="all">
+      <help-align-part1 />
+      <help-align-part2 />
+      <help-align-part3 />
+      <help-align-part4 />
+      <help-align-part5 />
+      <help-align-part6 />
+      <help-align-part7 />
+      <help-align-part8 />
+      <help-align-part9 />
+      <help-align-part10 />
+      <help-align-part11 />
+      <help-align-part12 />
+      <help-align-part13 />
+      <help-align-part14 />
+    </div>
+
 </template>
 <script setup>
 import HelpAlignPart1 from '@/vue/help-blocks/eng/help-align-parts/help-align-part1.vue'

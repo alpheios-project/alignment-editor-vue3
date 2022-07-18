@@ -1,7 +1,6 @@
 <template>
   <div class="alpheios-alignment-editor-initial-screen">
       <div class="alpheios-alignment-editor-initial-screen__intro">
-
         <div class="alpheios-header-logo">
           <img src="images/alpheios-logo-black-2.png" class="alpheios-logo">
         </div>

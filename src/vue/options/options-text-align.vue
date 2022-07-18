@@ -1,38 +1,40 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-options alpheios-alignment-editor-modal-options-align" data-alpheios-ignore="all">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click="$emit('closeModal')">
-            <x-close-icon />
-        </span>
-        <h2 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('OPTIONS_TITLE_TEXT_ALIGN') }}</h2>
-    </div>
-    <div class="alpheios-modal-body" >
+  <modal-base modalName="options-align" :draggable="true" height="auto" :shiftY="0.3" > 
+    <div class="alpheios-alignment-editor-modal-options alpheios-alignment-editor-modal-options-align" data-alpheios-ignore="all">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click="closeModal">
+              <x-close-icon />
+          </span>
+          <h2 class="alpheios-alignment-editor-modal-header">{{ l10n.getMsgS('OPTIONS_TITLE_TEXT_ALIGN') }}</h2>
+      </div>
+      <div class="alpheios-modal-body" >
 
-      <div class="alpheios-alignment-editor-modal-options-block">
-         <option-item-block :optionItem = "enableAnnotationsOptionItem" :optionInfo="getOptionInfo('enableAnnotations')" />
-        
-        <fieldset v-show = "enableAnnotationsValue" class="alpheios-alignment-editor-modal-options-block-fieldset">
-          <option-item-block :optionItem = "availableAnnotationTypesOptionItem"  :disabled = "disableAnnotationsTypes" />
-          <option-item-block :optionItem = "maxCharactersAnnotationTextOptionItem" />
-        </fieldset>
+        <div class="alpheios-alignment-editor-modal-options-block">
+          <option-item-block :optionItem = "enableAnnotationsOptionItem" :optionInfo="getOptionInfo('enableAnnotations')" />
+          
+          <fieldset v-show = "enableAnnotationsValue" class="alpheios-alignment-editor-modal-options-block-fieldset">
+            <option-item-block :optionItem = "availableAnnotationTypesOptionItem"  :disabled = "disableAnnotationsTypes" />
+            <option-item-block :optionItem = "maxCharactersAnnotationTextOptionItem" />
+          </fieldset>
 
-        <option-item-block :optionItem = "enableTokensEditorOptionItem" :optionInfo="getOptionInfo('enableTokensEditor')"/>
-        <select-edit-icons v-show="enableTokensEditorValue" :showLabelTextAsCheckboxLabel = "true" screenType="align" />
+          <option-item-block :optionItem = "enableTokensEditorOptionItem" :optionInfo="getOptionInfo('enableTokensEditor')"/>
+          <select-edit-icons v-show="enableTokensEditorValue" :showLabelTextAsCheckboxLabel = "true" screenType="align" />
 
-        <option-item-block :optionItem = "enableAlpheiosReadingToolsOptionItem" :optionInfo="getOptionInfo('enableAlpheiosReadingTools')" />
+          <option-item-block :optionItem = "enableAlpheiosReadingToolsOptionItem" :optionInfo="getOptionInfo('enableAlpheiosReadingTools')" />
+
+        </div>
 
       </div>
-
-    </div>
-    <div class="alpheios-modal-footer" >
-      <div class="alpheios-alignment-options__aboutcont">
-        <h3>{{ l10n.getMsgS('OPTIONS_BLOCK_INFO_ABOUT') }}</h3>
-        <div class="alpheios-alignment-options__versiontext">
-          {{ versionData }}
+      <div class="alpheios-modal-footer" >
+        <div class="alpheios-alignment-options__aboutcont">
+          <h3>{{ l10n.getMsgS('OPTIONS_BLOCK_INFO_ABOUT') }}</h3>
+          <div class="alpheios-alignment-options__versiontext">
+            {{ versionData }}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
@@ -48,7 +50,7 @@ import { useStore } from 'vuex'
 const $store = useStore()
 
 const l10n = computed(() => { return L10nSingleton })
-const emit = defineEmits([ 'closeModal' ])
+const $modal = inject('$modal')
 const $textC = inject('$textC')
 
 const state = reactive({
@@ -58,6 +60,10 @@ const state = reactive({
     enableTokensEditor: 'OPTIONS_TOKENS_EDITOR_INFO',
   }
 })
+
+const closeModal = () => {
+  $modal.hide('options-align')
+}
 
 const versionData = computed(() => {
   return `${$store.state.libName} ${$store.state.libVersion} (${$store.state.libBuildNameForDisplay})`

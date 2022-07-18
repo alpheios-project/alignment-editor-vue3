@@ -23,7 +23,7 @@
         <span class="alpheios-alignment-text-editor-block-buttons__part alpheios-alignment-text-editor-block__part-2">
           <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_HELP')" tooltipDirection = "top">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-help"
-                @click="state.helpAlignState++">
+                @click="$modal.show('help-align')">
                 <span class="alpheios-alignment-button-icon">
                   <question-icon />
                 </span>
@@ -31,7 +31,7 @@
           </tooltip>
           <tooltip :tooltipText = "l10n.getMsgS('TEXT_EDITOR_HEADER_OPTIONS')" tooltipDirection = "top">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-with-icon" id="alpheios-actions-menu-button__enter-options"
-                @click="state.optionsTextAlignState++" >
+                @click="$modal.show('options-align')" >
                 <span class="alpheios-alignment-button-icon">
                   <gear-icon />
                 </span>
@@ -41,7 +41,7 @@
 
         <span class="alpheios-alignment-text-editor-block__part alpheios-alignment-text-editor-block__part-3">
           <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" id="alpheios-actions-menu-button__enter-save"
-              @click="state.saveAlignState++">
+              @click="$modal.show('save')">
               {{ l10n.getMsgS("ALIGN_EDITOR_SAVE") }}
           </button>
         </span>
@@ -49,41 +49,21 @@
 
     <align-editor-view-mode v-if="renderAlignEditor" @update-annotation = "updateAnnotation" 
             :annotationMode="state.annotationMode"/>   
+   
+    <help-popup modalName = "help-align">
+      <template v-slot:content > <help-block-align /> </template>
+    </help-popup>
+  
+    <options-text-align />
 
-    <modal name="help-align" :toggleState="state.helpAlignState" 
-          height="80%" width="80%" :shiftY="0.3"
-          :max-width="1300" :adaptive="true">     
-      <help-popup @closeModal = "state.helpAlignState++" mname = "help-align">
-        <template v-slot:content > <help-block-align /> </template>
-      </help-popup>
-    </modal>
-
-    <modal name="save-align" :toggleState="state.saveAlignState" 
-          :draggable="true" height="auto" 
-           >   
-      <save-popup @closeModal = "state.saveAlignState++" />
-    </modal>
-
-    <modal name="options-align" :toggleState="state.optionsTextAlignState" 
-          :draggable="true" height="auto" :shiftY="0.3" >   
-      <options-text-align @closeModal = "state.optionsTextAlignState++" />
-    </modal>
-
-    <modal name="annotation" :toggleState="state.annotationState" 
-          :draggable="true" height="auto" :shiftY="0.3" >   
-
-    <annotation @closeModal = "state.annotationState++" 
-                                :token = "state.annotationToken" 
-        />
-
-    </modal>
+    <annotation :token = "state.annotationToken" />
   </div>
 </template>
 <script setup>
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 import SettingsController from '@/lib/controllers/settings-controller.js'
 import Tooltip from '@/vue/common/tooltip.vue'
-import Modal from '@/vue/modal-base/modal.vue'
+
 import SavePopup from '@/vue/modal-slots/save-popup.vue'
 import OptionsTextAlign from '@/vue/options/options-text-align.vue'
 
@@ -102,16 +82,12 @@ import { useStore } from 'vuex'
 
 const emit = defineEmits([ 'showSourceTextEditor', 'showTokensEditor' ])
 
+const $modal = inject('$modal')
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
 const $alignedGC = inject('$alignedGC')
 
 const state = reactive({
-  helpAlignState: 0,
-  optionsTextAlignState: 0,
-  saveAlignState: 0,
-  annotationState: 0,
-
   annotationToken: null,
   annotationMode: false
 })
@@ -142,12 +118,12 @@ const enableAnnotationsValue = computed(() => {
 
 const updateAnnotation = (token) => {
   state.annotationToken = token
-  state.annotationState++
+  $modal.show('annotation')
 }
 
 const closeAnnotationModal = () => {
   state.annotationToken = null
-  state.annotationState++
+  $modal.hide('annotation')
 }
 
 </script>

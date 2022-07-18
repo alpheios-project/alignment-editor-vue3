@@ -1,18 +1,34 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-help">
-    <div class="alpheios-modal-header" >
-        <span class="alpheios-alignment-modal-close-icon" @click="$emit('closeModal')">
-            <x-close-icon />
-        </span>
-        <h2 class="alpheios-alignment-editor-modal-header">Help</h2>
+  <modal-base :modalName="props.modalName" 
+          height="80%" width="80%" :shiftY="0.3"
+          :max-width="1300" :adaptive="true">  
+    <div class="alpheios-alignment-editor-modal-help">
+      <div class="alpheios-modal-header" >
+          <span class="alpheios-alignment-modal-close-icon" @click="$modal.hide(props.modalName)">
+              <x-close-icon />
+          </span>
+          <h2 class="alpheios-alignment-editor-modal-header">Help</h2>
+      </div>
+      <div class="alpheios-modal-body" >
+          <slot name="content"></slot>
+      </div>
     </div>
-    <div class="alpheios-modal-body" >
-        <slot name="content"></slot>
-    </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 import XCloseIcon from '@/inline-icons/xclose.svg'
+import { reactive, ref, inject, computed, onMounted } from 'vue'
+
+const $modal = inject('$modal')
+
+const props = defineProps({
+  modalName: {
+    type: String,
+    required: true
+  }
+})
+
+
 </script>
 
 <style lang="scss">

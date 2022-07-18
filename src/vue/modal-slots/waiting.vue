@@ -1,9 +1,11 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-waiting">
-    <div class="alpheios-modal-body alpheios-editor__waiting">
-        <span class="alpheios-editor__waiting-gif"><img src="images/waiting.gif" /></span>
+  <modal-base modalName="waiting" height="auto">
+    <div class="alpheios-alignment-editor-modal-waiting">
+      <div class="alpheios-modal-body alpheios-editor__waiting">
+          <span class="alpheios-editor__waiting-gif"><img src="images/waiting.gif" /></span>
+      </div>
     </div>
-  </div>
+  </modal-base>
 </template>
 <script setup>
 </script>

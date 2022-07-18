@@ -1,7 +1,8 @@
 <template>
-  <div class="alpheios-alignment-editor-modal-summary">
+  <modal-base modalName="summary" :toggleState="state.summaryState" height="auto">
+    <div class="alpheios-alignment-editor-modal-summary">
         <div class="alpheios-modal-header" >
-            <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
+            <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">
                 <x-close-icon />
             </span>
             <p class="alpheios-editor-summary-header" v-html="l10n.getMsgS('SUMMARY_POPUP_HEADER')"></p>
@@ -61,11 +62,12 @@
           <div class="alpheios-editor-summary-footer" >
             <button class="alpheios-editor-button-tertiary alpheios-modal-button" @click = "startAlign" >
                   {{ l10n.getMsgS('SUMMARY_POPUP_OK_BUTTON') }}</button>
-            <button class="alpheios-editor-button-tertiary alpheios-modal-button" @click="emit('closeModal')" >
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" @click="closeModal" >
                   {{ l10n.getMsgS('SUMMARY_POPUP_CANCEL_BUTTON') }}</button>
           </div>
         </div>
     </div>
+  </modal-base>
 </template>
 <script setup>
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
@@ -78,16 +80,22 @@ import SettingsController from '@/lib/controllers/settings-controller.js'
 import { computed, inject, reactive, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 
-const emit = defineEmits([ 'closeModal', 'start-align' ])
+const emit = defineEmits([ 'start-align' ])
 
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
+
+const $modal = inject('$modal')
 
 const $textC = inject('$textC')
 
 const state = reactive({
   showLabelTextOpt: false
 })
+
+const closeModal = () => {
+  $modal.hide('summary')
+}
 
 const originalLangData = computed(() => {
   return $store.state.docSourceUpdated && $store.state.optionsUpdated && $textC.originalLangData
@@ -108,7 +116,7 @@ const contentAvailable = computed(() => {
 
 const startAlign = () => {
   emit('start-align')
-  emit('closeModal')
+  closeModal()
 }
 
 </script>

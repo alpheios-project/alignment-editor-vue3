@@ -1,7 +1,8 @@
 <template>  
+  <modal-base :modalName="modalName" :draggable="true" height="auto" :shiftY="0.3" :clickToClose="!state.showWaitingUpload" > 
     <div class="alpheios-alignment-editor-modal-dts-api" data-alpheios-ignore="all">
       <div class="alpheios-modal-header" >
-          <span class="alpheios-alignment-modal-close-icon" @click = "emit('closeModal')">
+          <span class="alpheios-alignment-modal-close-icon" @click = "$modal.hide('dtsapi')">
               <x-close-icon />
           </span>
 
@@ -62,6 +63,7 @@
                   @click="closeModal" :disabled="state.showWaiting">Cancel</button>
       </div>
     </div>
+  </modal-base>
 </template>
 <script setup>
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
@@ -73,9 +75,18 @@ import Waiting from '@/vue/common/waiting.vue'
 import XCloseIcon from '@/inline-icons/xclose.svg'
 
 import { computed, inject, reactive, onMounted } from 'vue'
-const emit = defineEmits([ 'closeModal', 'uploadFromDTSAPI', 'updateShowWaiting' ])
+const emit = defineEmits([ 'uploadFromDTSAPI' ])
 
 const l10n = computed(() => { return L10nSingleton })
+
+const $modal = inject('$modal')
+
+const props = defineProps({
+  modalName: {
+    type: String,
+    required: true
+  }
+})
 
 const state = reactive({
   homeLinks: [],
@@ -147,8 +158,6 @@ const clearContent = (showWaiting = true) => {
   state.checkedRefs = []
   state.contentUpdated++
   state.showWaiting = showWaiting
-
-  emit('updateShowWaiting', state.showWaiting)
 }
 
 const updateContent = (content = null, showWaiting = false) => {
@@ -161,7 +170,6 @@ const updateContent = (content = null, showWaiting = false) => {
   }
 
   state.showWaiting = showWaiting
-  emit('updateShowWaiting', state.showWaiting)
   state.contentUpdated++
 }
 
@@ -210,19 +218,14 @@ const getDocument = async () => {
   const refParams = defineRefParams()     
   state.showWaiting = true
 
-  emit('updateShowWaiting', state.showWaiting)
-
   const result = await UploadController.upload('dtsAPIUpload', {linkData, objType: 'document', refParams})
 
   state.showWaiting = false
-
-  emit('updateShowWaiting', state.showWaiting)
-
   if (result) {
     state.checkedRefs.splice(0, state.checkedRefs.length)
 
     emit('uploadFromDTSAPI', result)
-    emit('closeModal')
+    $modal.hide(props.modalName)
     return true
   }
 }
@@ -231,23 +234,20 @@ const getEntireDocument = async () => {
   const linkData = state.content[0]
   state.showWaiting = true
 
-  emit('updateShowWaiting', state.showWaiting)
-
   const result = await UploadController.upload('dtsAPIUpload', {linkData, objType: 'document'})
 
   state.showWaiting = false
   
-  emit('updateShowWaiting', state.showWaiting)
   if (result) {
     emit('uploadFromDTSAPI', result)
-    emit('closeModal')
+    $modal.hide(props.modalName)
     return true
   }
 }
 
 const closeModal = () => {
   state.checkedRefs.splice(0, state.checkedRefs.length)
-  emit('closeModal')
+  $modal.hide(props.modalName)
 }
 
 const getPage = async (pageNum) => {
