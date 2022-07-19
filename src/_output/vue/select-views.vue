@@ -1,12 +1,12 @@
 <template>
     <div class = "alpheios-alignment-header-line" :class="{ 'alpheios-alignment-header-line-in-header' : inHeader }">
         <div class = "alpheios-alignment-radio-block alpheios-alignment-option-item__control">
-            <span v-for="(item, idx) in state.localAllViewTypes" :key="idx" :ref = "itemRefs1">
+            <span v-for="(item, idx) in state.localAllViewTypes" :key="idx">
               <input type="radio" :id="itemIdWithValue(item.value)" :value="item.value" v-model="state.viewType" 
                 :data-checked1="item.value"
                 :data-checked2="state.viewType"
                 @change="changeViewType"
-                :ref = "itemRefs2"
+                :ref="el => (itemRefs[idx] = el)"
               />
               <label :for="itemIdWithValue(item.value)" @click = "clickInput(idx)"> {{ item.label }} </label>
             </span>
@@ -25,11 +25,10 @@
 </template>
 <script setup>
 import Tooltip from '@/_output/vue/common/tooltip.vue'
-import { computed, inject, reactive, onMounted, watch, ref, nextTick } from 'vue'
+import { computed, inject, reactive, onMounted, watch, ref, nextTick, onActivated } from 'vue'
 
 const emit = defineEmits([ 'updateViewType' ])
-const itemRefs1 = ref([])
-const itemRefs2 = ref([])
+const itemRefs = []
 
 const props = defineProps({
   inHeader: {
@@ -53,13 +52,15 @@ const state = reactive({
   localAllViewTypes: []
 })
 
-onMounted(() => {
+onMounted(async () => {
   props.allViewTypes.forEach(viewType => {
     state.localAllViewTypes.push(viewType)
+    itemRefs.push(ref(null))
   })
   state.viewType = state.localAllViewTypes[0]
-  console.info('itemRefs1 - ', itemRefs1.value)
-  console.info('itemRefs2 - ', itemRefs2.value)
+
+  await nextTick()
+  itemRefs[0].click()
 })
 
 const itemIdWithValue = (value) => {
@@ -71,15 +72,9 @@ const changeViewType = () => {
 }
 
 const clickInput = (itemIndex) => {
-  console.info('itemRefs.value ', itemIndex, itemRefs1.value)
-  // itemRefs.value[itemIndex].click()
-  /*
-  const refInput = this.itemIdWithValue(itemValue)
-
-  if (!this.$refs[refInput][0].checked) {
-    this.$refs[refInput][0].click()
+  if (!itemRefs[itemIndex].checked) {
+    itemRefs[itemIndex].click()
   }
-  */
 }
 </script>
 

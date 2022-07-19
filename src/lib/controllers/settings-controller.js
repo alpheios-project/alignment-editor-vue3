@@ -303,7 +303,6 @@ export default class SettingsController {
    *        {String} sourceTextData.sourceType
    */
   static updateLocalTextEditorOptions (localTextEditorOptions, sourceTextData) {
-    // console.info('updateLocalTextEditorOptions - localTextEditorOptions', localTextEditorOptions)
     if (sourceTextData.lang) {
       localTextEditorOptions.sourceText.items.language.setValue(sourceTextData.lang)
     }
