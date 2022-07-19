@@ -118,7 +118,6 @@ export default {
 
     $modal.on('showModal', (data) => {
       if (props.modalName === data.modalName) {
-        console.info('showModal - ', props.modalName)
         onToggle(true, data)
       }
     })

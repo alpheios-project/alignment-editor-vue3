@@ -110,7 +110,6 @@ const showSummaryPopupOpt = computed(() => {
 })
 
 const contentAvailable = computed(() => {
-  console.info('contentAvailable -', originalLangData.value, targetsLangData.value)
   return $store.state.docSourceUpdated && originalLangData.value && targetsLangData.value
 })
 
