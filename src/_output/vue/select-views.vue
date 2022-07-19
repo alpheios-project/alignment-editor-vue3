@@ -25,7 +25,7 @@
 </template>
 <script setup>
 import Tooltip from '@/_output/vue/common/tooltip.vue'
-import { computed, inject, reactive, onMounted, watch, ref, nextTick, onActivated } from 'vue'
+import { computed, inject, reactive, onMounted, watch, ref, nextTick } from 'vue'
 
 const emit = defineEmits([ 'updateViewType' ])
 const itemRefs = []
