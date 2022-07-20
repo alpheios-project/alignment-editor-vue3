@@ -123,12 +123,15 @@ const state = reactive({
   alpheiosLogoBlackPNG: ImagesConverted.alpheiosLogoBlackPNG
 })
 
+
 onMounted(() => {
   Object.keys(state.identList).forEach(viewType => {
-    state.identList[viewType] = GroupUtility.allIdentificationTargets(fullData.value, state.viewType)
+    state.identList[viewType] = GroupUtility.allIdentificationTargets(fullData.value, viewType)
   })
+  
   state.viewType = state.allViewTypes[0].value
 })
+
 const fullData = computed(() => {
   return new SourceData($fullData)
 })
