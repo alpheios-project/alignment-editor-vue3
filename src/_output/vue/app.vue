@@ -59,9 +59,9 @@
                   v-if="state.viewType === 'viewInterlinearly'" />
 
         </div>
-<!--
+
         <annotation-block />
--->
+
     
     <help-popup  />
     </div>
@@ -70,8 +70,7 @@
 import GroupUtility from '@/_output/utility/group-utility.js'
 import SourceData from '@/_output/data/source-data.js'
 
-// import TextFilterBlock from '@/_output/vue/text-filter-block.vue'
-// import AnnotationBlock from '@/_output/vue/annotation-block.vue'
+import AnnotationBlock from '@/_output/vue/annotation-block.vue'
 
 import AlGroupsViewFull from '@/_output/vue/views/al-groups-view-full.vue'
 import AlGroupsViewShort from '@/_output/vue/views/al-groups-view-short.vue'

@@ -8,8 +8,8 @@ export default {
       on: emitter.on.bind(emitter),
       emit: emitter.emit.bind(emitter),
 
-      show: (modalName) => {
-        emitter.emit('showModal', { modalName })
+      show: (modalName, params) => {
+        emitter.emit('showModal', Object.assign({ modalName }, params))
       },
       hide: (modalName) => {
         emitter.emit('hideModal', { modalName })

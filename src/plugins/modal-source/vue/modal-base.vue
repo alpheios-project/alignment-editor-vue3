@@ -337,7 +337,7 @@ export default {
         cancelEvent = true
       }
 
-      emit('before-open')
+      emit('before-open', { params })
 
       if (cancelEvent) {
         return
@@ -364,6 +364,8 @@ export default {
       const cancel = () => {
         cancelEvent = true
       }
+
+      emit('before-close', { params })
 
       if (cancelEvent) {
         return
