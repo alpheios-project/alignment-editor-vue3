@@ -17,6 +17,7 @@
 <script setup>
 import { computed, reactive, inject, onMounted, watch } from 'vue'
 const emit = defineEmits([ 'addHoverToken', 'removeHoverToken' ])
+const $modal = inject('$modal')
 
 const props = defineProps({
   token: {
@@ -64,7 +65,7 @@ const filteredGroupData = computed(() => {
 
 const checkAnnotations = () => {
   if (props.token.annotated) {
-    // this.$modal.show('annotations', { token: this.token })
+    $modal.show('annotations', { token: props.token })
   }
 }
 
