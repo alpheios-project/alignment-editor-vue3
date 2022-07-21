@@ -1,5 +1,5 @@
 <template>
-    <div class="alpheios-al-editor-container alpheios-al-editor-view-interlinearly" v-if="props.fullData">
+    <div class="alpheios-al-editor-container alpheios-al-editor-view-interlinearly" v-if="$fullData">
       <div class ="alpheios-al-editor-container-inner alpheios-al-editor-segment-view">
 
           <div class="alpheios-al-editor-segment-row"
@@ -9,8 +9,8 @@
             <div class="alpheios-al-editor-segment-cell alpheios-al-editor-segment-cell-origin" >
               <segment-block textType = "origin"
                 :segmentData = "segmentData.origin" :segIndex = "segIndex"
-                :dir = "props.fullData.getDir('origin')" :lang = "props.fullData.getLang('origin')" 
-                :langName = "props.fullData.getLangName('origin')" :metadataShort = "props.fullData.getMetadataShort('origin')"
+                :dir = "$fullData.getDir('origin')" :lang = "$fullData.getLang('origin')" 
+                :langName = "$fullData.getLangName('origin')" :metadataShort = "$fullData.getMetadataShort('origin')"
                 :shownTabs = "shownTabs" :interlinearly = "true"
               />
             </div><!-- alpheios-al-editor-segment-cell -->
@@ -27,11 +27,9 @@ import GroupUtility from '@/_output/utility/group-utility.js'
 
 import { computed, reactive, inject, onMounted, watch } from 'vue'
 
+const $fullData = inject('$fullData')
+
 const props = defineProps({
-  fullData: {
-    type: Object,
-    required: true
-  },
   identList: {
     type: Array,
     required: true
@@ -43,11 +41,11 @@ const shownTabs = computed(() => {
 })
 
 const allOriginSegments = computed(() => {
-  return GroupUtility.allOriginSegments(props.fullData)
+  return GroupUtility.allOriginSegments($fullData)
 })
 
 const targetDataForTabs = computed(() => {
-  return GroupUtility.targetDataForTabs(props.fullData)
+  return GroupUtility.targetDataForTabs($fullData)
 })
 
 const getIndex = (textType, index, additionalIndex = 0) => {

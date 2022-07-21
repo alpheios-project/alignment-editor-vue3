@@ -9,7 +9,7 @@
 
       <div class="alpheios-alignment-app-menu__buttons" :class="{ 'alpheios-alignment-menu-only-filter': props.onlyFilter }">
 
-        <text-filter-block :fullData="props.fullData" v-for="view in allViewsNames" :key="view"
+        <text-filter-block v-for="view in allViewsNames" :key="view"
             @changeOrder = "changeOrder" @updateVisibility = "updateVisibility" 
             :view = "view" v-show = "props.currentView === view"/>
       </div>
@@ -34,10 +34,6 @@ const emit = defineEmits([ 'changeOrder', 'updateVisibility', 'updateViewType' ]
 const props = defineProps({
   menuShow: {
     type: Number,
-    required: true
-  },
-  fullData: {
-    type: Object,
     required: true
   },
   onlyFilter: {

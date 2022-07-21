@@ -1,5 +1,5 @@
 <template>
-    <div class="alpheios-al-editor-container alpheios-al-editor-view-columns" v-if="props.fullData">
+    <div class="alpheios-al-editor-container alpheios-al-editor-view-columns" v-if="$fullData">
       <div class ="alpheios-al-editor-container-inner alpheios-al-editor-segment-view">
 
           <div class="alpheios-al-editor-segment-big-row"
@@ -19,10 +19,10 @@
                   <segment-block v-if="segmentSingle.textType"
                     :textType = "segmentSingle.textType" 
                     :segmentData = "segmentSingle" :segIndex = "segIndex" :maxHeight = "state.maxHeight"
-                    :dir = "props.fullData.getDir(segmentSingle.textType, segmentSingle.targetId)"
-                    :lang = "props.fullData.getLang(segmentSingle.textType, segmentSingle.targetId)"
-                    :langName = "props.fullData.getLangName(segmentSingle.textType, segmentSingle.targetId)"
-                    :metadataShort = "props.fullData.getMetadataShort(segmentSingle.textType, segmentSingle.targetId)"
+                    :dir = "$fullData.getDir(segmentSingle.textType, segmentSingle.targetId)"
+                    :lang = "$fullData.getLang(segmentSingle.textType, segmentSingle.targetId)"
+                    :langName = "$fullData.getLangName(segmentSingle.textType, segmentSingle.targetId)"
+                    :metadataShort = "$fullData.getMetadataShort(segmentSingle.textType, segmentSingle.targetId)"
                     :hoveredGroupsId = "state.hoveredGroupsId" :shownTabs = "shownTabs"
                     @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
 
@@ -50,11 +50,9 @@ import GroupUtility from '@/_output/utility/group-utility.js'
 
 import { computed, reactive, inject, onMounted, watch } from 'vue'
 
+const $fullData = inject('$fullData')
+
 const props = defineProps({
-  fullData: {
-    type: Object,
-    required: true
-  },
   identList: {
     type: Array,
     required: true
@@ -74,15 +72,15 @@ const shownTabs = computed(() => {
 })
 
 const segmentsForColumns = computed(() => {
-  return GroupUtility.segmentsForColumns(props.fullData, shownTabs.value)
+  return GroupUtility.segmentsForColumns($fullData, shownTabs.value)
 })
 
 const allTargetTextsIds = computed(() => {
-  return GroupUtility.allTargetTextsIds(props.fullData)
+  return GroupUtility.allTargetTextsIds($fullData)
 })
 
 const alGroups = computed(() => {
-  return GroupUtility.alignmentGroups(props.fullData, 'full')
+  return GroupUtility.alignmentGroups($fullData, 'full')
 })
 
 const orderedTargetsId = computed(() => {
