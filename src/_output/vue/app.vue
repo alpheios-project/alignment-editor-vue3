@@ -3,7 +3,6 @@
 
       <main-menu 
         :menuShow = "state.menuShow"
-        :fullData="fullData"
         @changeOrder = "changeOrder" @updateVisibility = "updateVisibility"
         @updateViewType = "updateViewType"
         :onlyFilter = "true"
@@ -43,20 +42,20 @@
             </div>
             <p class="alpheios-alignment-editor-container__view-notice" v-html="noticeText"></p>
 
-            <al-groups-view-full :fullData="fullData" :identList = "state.identList[state.viewType]" 
+            <al-groups-view-full :identList = "state.identList[state.viewType]" 
                   v-if="state.viewType === 'viewFull'" />
-            <al-groups-view-columns :fullData="fullData" :identList = "state.identList[state.viewType]"  
+            <al-groups-view-columns :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'view3Columns'" />
-            <al-groups-view-short :fullData="fullData" :identList = "state.identList[state.viewType]"  
+            <al-groups-view-short :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewShort'" />
 
-            <al-groups-view-sentence :fullData="fullData" :identList = "state.identList[state.viewType]"  
+            <al-groups-view-sentence :identList = "state.identList[state.viewType]"  
                   :sentence-count = "state.sentenceCount" v-if="state.viewType === 'viewSentence'" />
 
-            <al-groups-view-equivalence :fullData="fullData" :identList = "state.identList[state.viewType]"  
+            <al-groups-view-equivalence :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewEquivalence'" />
 
-            <al-groups-view-interlinearly :fullData="fullData" :identList = "state.identList[state.viewType]"  
+            <al-groups-view-interlinearly :identList = "state.identList[state.viewType]"  
                   v-if="state.viewType === 'viewInterlinearly'" />
 
         </div>
@@ -126,14 +125,10 @@ const state = reactive({
 
 onMounted(() => {
   Object.keys(state.identList).forEach(viewType => {
-    state.identList[viewType] = GroupUtility.allIdentificationTargets(fullData.value, viewType)
+    state.identList[viewType] = GroupUtility.allIdentificationTargets($fullData, viewType)
   })
   
   state.viewType = state.allViewTypes[0].value
-})
-
-const fullData = computed(() => {
-  return new SourceData($fullData)
 })
 
 const shownTabs = computed(() => {

@@ -1,5 +1,5 @@
 <template>
-    <div class="alpheios-al-editor-container alpheios-al-editor-view-full" v-if="props.fullData">
+    <div class="alpheios-al-editor-container alpheios-al-editor-view-full" v-if="$fullData">
         <div class ="alpheios-al-editor-container-inner alpheios-al-editor-segment-view">
 
           <div class="alpheios-al-editor-segment-row"
@@ -10,8 +10,8 @@
 
               <segment-block textType = "origin"
                 :segmentData = "segmentData.origin" :segIndex = "segIndex" :maxHeight = "maxHeight"
-                :dir = "props.fullData.getDir('origin')" :lang = "props.fullData.getLang('origin')" 
-                :langName = "props.fullData.getLangName('origin')" :metadataShort = "props.fullData.getMetadataShort('origin')"
+                :dir = "$fullData.getDir('origin')" :lang = "$fullData.getLang('origin')" 
+                :langName = "$fullData.getLangName('origin')" :metadataShort = "$fullData.getMetadataShort('origin')"
                 :shownTabs = "shownTabs" :hoveredGroupsId = "state.hoveredGroupsId"
                 @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
               />
@@ -22,8 +22,8 @@
                 v-for="(segmentTarget, targetIndex) in getSegmentData(segIndex)" :key="getIndex('target', segIndex, segmentTarget.targetId)"
 
                 :targetId = "segmentTarget.targetId" :segIndex = "segIndex" 
-                :dir = "props.fullData.getDir('target', segmentTarget.targetId)" :lang = "props.fullData.getLang('target', segmentTarget.targetId)" 
-                :langName = "props.fullData.getLangName('target', segmentTarget.targetId)" :metadataShort = "props.fullData.getMetadataShort('target', segmentTarget.targetId)"
+                :dir = "$fullData.getDir('target', segmentTarget.targetId)" :lang = "$fullData.getLang('target', segmentTarget.targetId)" 
+                :langName = "$fullData.getLangName('target', segmentTarget.targetId)" :metadataShort = "$fullData.getMetadataShort('target', segmentTarget.targetId)"
                 :segmentData = "segmentTarget.segment" :targetIdIndex = "targetIndex" :maxHeight = "maxHeight" :hoveredGroupsId = "state.hoveredGroupsId"
                 :isLast = "targetIndex === segmentData.targets.length - 1" @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
                 v-show="isShownTab(segmentTarget.targetId)"
@@ -43,11 +43,9 @@ import GroupUtility from '@/_output/utility/group-utility.js'
 
 import { computed, reactive, inject, onMounted, watch } from 'vue'
 
+const $fullData = inject('$fullData')
+
 const props = defineProps({
-  fullData: {
-    type: Object,
-    required: true
-  },
   identList: {
     type: Array,
     required: true
@@ -65,15 +63,15 @@ const shownTabs = computed(() => {
 })
 
 const allShownSegments = computed(() => {
-  return GroupUtility.allShownSegments(props.fullData, shownTabs.value)
+  return GroupUtility.allShownSegments($fullData, shownTabs.value)
 })
 
 const targetDataForTabs = computed(() => {
-  return GroupUtility.targetDataForTabs(props.fullData)
+  return GroupUtility.targetDataForTabs($fullData)
 })
 
 const alGroups = computed(() => {
-  return GroupUtility.alignmentGroups(props.fullData, 'full')
+  return GroupUtility.alignmentGroups($fullData, 'full')
 })
 
 const orderedTargetsId = computed(() => {

@@ -1,5 +1,5 @@
 <template>
-    <div class="alpheios-al-editor-container alpheios-al-editor-view-short" v-if="props.fullData">
+    <div class="alpheios-al-editor-container alpheios-al-editor-view-short" v-if="$fullData">
         
         <div class ="alpheios-al-editor-container-inner alpheios-al-editor-table-view">
 
@@ -10,8 +10,8 @@
             >
               <segment-block textType = "origin"
                 :segmentData = "segmentData.origin" :segIndex = "segIndex" :maxHeight = "maxHeight"
-                :dir = "props.fullData.getDir('origin')" :lang = "props.fullData.getLang('origin')" 
-                :langName = "props.fullData.getLangName('origin')" :metadataShort = "props.fullData.getMetadataShort('origin')"
+                :dir = "$fullData.getDir('origin')" :lang = "$fullData.getLang('origin')" 
+                :langName = "$fullData.getLangName('origin')" :metadataShort = "$fullData.getMetadataShort('origin')"
                 :hoveredGroupsId = "state.hoveredGroupsId" :shownTabs = "shownTabs"
                 @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
               />
@@ -47,11 +47,9 @@ import GroupUtility from '@/_output/utility/group-utility.js'
 
 import { computed, reactive, inject, onMounted, watch } from 'vue'
 
+const $fullData = inject('$fullData')
+
 const props = defineProps({
-  fullData: {
-    type: Object,
-    required: true
-  },
   identList: {
     type: Array,
     required: true
@@ -69,11 +67,11 @@ const shownTabs = computed(() => {
 })
 
 const allOriginSegments = computed(() => {
-  return GroupUtility.allOriginSegments(props.fullData)
+  return GroupUtility.allOriginSegments($fullData)
 })
 
 const allAlGroups = computed(() => {
-  return GroupUtility.alignmentGroups(props.fullData, 'short')
+  return GroupUtility.alignmentGroups($fullData, 'short')
 })
 
 const hoveredTargetTokens = computed(() => {
@@ -142,7 +140,7 @@ const removeHoverToken = (token) => {
 }
 
 const targetLangName = (hoveredTargetTokens) => {
-  return props.fullData.getLangName('target', hoveredTargetTokens.targetId)
+  return $fullData.getLangName('target', hoveredTargetTokens.targetId)
 }
 
 </script>
