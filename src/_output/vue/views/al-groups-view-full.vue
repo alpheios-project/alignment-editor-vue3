@@ -18,16 +18,18 @@
             </div><!-- alpheios-al-editor-segment-cell -->
 
             <div class="alpheios-al-editor-segment-cell alpheios-al-editor-segment-cell-target">
-              <segment-block textType = "target"
-                v-for="(segmentTarget, targetIndex) in getSegmentData(segIndex)" :key="getIndex('target', segIndex, segmentTarget.targetId)"
+              <div class="alpheios-al-editor-segment-cell-target-container" :style="targetContainerStyle">
+                <segment-block textType = "target"
+                  v-for="(segmentTarget, targetIndex) in getSegmentData(segIndex)" :key="getIndex('target', segIndex, segmentTarget.targetId)"
 
-                :targetId = "segmentTarget.targetId" :segIndex = "segIndex" 
-                :dir = "$fullData.getDir('target', segmentTarget.targetId)" :lang = "$fullData.getLang('target', segmentTarget.targetId)" 
-                :langName = "$fullData.getLangName('target', segmentTarget.targetId)" :metadataShort = "$fullData.getMetadataShort('target', segmentTarget.targetId)"
-                :segmentData = "segmentTarget.segment" :targetIdIndex = "targetIndex" :maxHeight = "maxHeight" :hoveredGroupsId = "state.hoveredGroupsId"
-                :isLast = "targetIndex === segmentData.targets.length - 1" @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
-                v-show="isShownTab(segmentTarget.targetId)"
-              />
+                  :targetId = "segmentTarget.targetId" :segIndex = "segIndex" 
+                  :dir = "$fullData.getDir('target', segmentTarget.targetId)" :lang = "$fullData.getLang('target', segmentTarget.targetId)" 
+                  :langName = "$fullData.getLangName('target', segmentTarget.targetId)" :metadataShort = "$fullData.getMetadataShort('target', segmentTarget.targetId)"
+                  :segmentData = "segmentTarget.segment" :targetIdIndex = "targetIndex" :maxHeight = "maxHeight" :hoveredGroupsId = "state.hoveredGroupsId"
+                  :isLast = "targetIndex === segmentData.targets.length - 1" @addHoverToken = "addHoverToken" @removeHoverToken = "removeHoverToken"
+                  v-show="isShownTab(segmentTarget.targetId)"
+                />
+              </div>
             </div><!-- alpheios-al-editor-segment-cell -->
 
             </div>
@@ -86,6 +88,9 @@ const containerHeight = computed(() => {
   return (window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight) - 150
 })
 
+const targetContainerStyle = computed(() => {
+  return `max-height: ${containerHeight.value}px;`
+})
 const maxHeight = computed(() => {
   const minHeight = 400
   

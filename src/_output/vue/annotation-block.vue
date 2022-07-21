@@ -45,7 +45,6 @@ const allAnnotations = computed(() => {
 })
 
 const beforeOpen = (data) => {
-  console.info('beforeOpen - ', data)
   state.token = data.params.token
 }
 
