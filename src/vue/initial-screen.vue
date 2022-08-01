@@ -15,6 +15,7 @@
 
           <div class="alpheios-alignment-editor-initial-screen__button">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-main-button"  
+                  id="alpheios-editor-start-new-alignment"
                   @click="startNewAlignment" >
                 {{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT') }}
             </button>
@@ -22,6 +23,7 @@
 
           <div class="alpheios-alignment-editor-initial-screen__button">
             <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-main-button"  
+                  id="alpheios-editor-resume-prev-alignment"
                   @click="resumePrevAlignment" >
                 {{ l10n.getMsgS('INITIAL_RESUME_ALIGNMENT') }}
             </button>
@@ -29,11 +31,13 @@
             <div class="alpheios-alignment-app-menu__upload-block-choice" v-show="state.showUploadBlock" >
               <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-main-button" 
                 :class="{ 'alpheios-active': state.showUploadFromFile }" 
+                id="alpheios-editor-resume-prev-alignment_file"
                 @click="updateShowBlock('fromFile')" >
                 {{ l10n.getMsgS('INITIAL_CHOOSE_FROM_FILE') }}
               </button>
               <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-main-button"  
                 :class="{ 'alpheios-active': state.showUploadFromDB }" 
+                id="alpheios-editor-resume-prev-alignment_autosaved"
                 @click="updateShowBlock('fromDB')" >
                 {{ l10n.getMsgS('INITIAL_CHOOSE_FROM_DB') }}
               </button>

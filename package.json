@@ -13,7 +13,7 @@
     "test-a": "jest tests/lib/controllers/",
     "test-b": "jest tests/lib/data/",
     "test-c": "jest tests/lib/tokenizers/",
-    "test-d": "jest tests/vue/initial-screen.test.js"
+    "test-d": "jest tests/vue/text-editor/text-editor-single-block.test.js"
   },
   "author": "",
   "license": "ISC",
