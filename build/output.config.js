@@ -14,7 +14,7 @@ const path = require('path')
 const projectRoot = process.cwd()
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: './src/_output/index.js',
   output: {
     library: 'AlignmentEditorOutput',
