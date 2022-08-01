@@ -36,7 +36,7 @@ const props = defineProps({
 })
 
 const optionItem = computed(() => {
-  return $store.state.optionsUpdated && props.localOptions.sourceText.items.language
+  return $store.state.optionsUpdated && props.localOptions.sourceText && props.localOptions.sourceText.items.language
 })
 
 const showOptions = computed(() => {

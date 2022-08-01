@@ -1,6 +1,6 @@
 <template>
   <modal-base modalName = "createAlTitle" height="auto" :shiftY="0.3" >
-    <div class="alpheios-alignment-editor-modal-create-al-title">
+    <div id="alpheios-editor-modal-create-al-title" class="alpheios-alignment-editor-modal-create-al-title">
       <div class="alpheios-modal-header">
           <span class="alpheios-alignment-modal-close-icon" @click="closeModal">
               <x-close-icon />
@@ -20,9 +20,9 @@
       </div>
       <div class="alpheios-modal-footer" >
           <div class="alpheios-editor-summary-footer" >
-            <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" id="alpheios-editor-create-al-title_ok"
                 @click = "createAlignment" :disabled="!state.alTitle">{{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT') }}</button>
-            <button class="alpheios-editor-button-tertiary alpheios-modal-button" 
+            <button class="alpheios-editor-button-tertiary alpheios-modal-button" id="alpheios-editor-create-al-title_cancel"
                 @click = "closeModal" >{{ l10n.getMsgS('UPLOAD_WARN_CANCEL_BUTTON') }}</button>
           </div>
       </div>

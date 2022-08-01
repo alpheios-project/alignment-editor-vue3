@@ -1,5 +1,5 @@
 <template>
-  <div class="alpheios-alignment-option-item" v-if="!props.optionItem.hidden">
+  <div class="alpheios-alignment-option-item" v-if="props.optionItem && !props.optionItem.hidden">
     <label class="alpheios-alignment-option-item__label-container" v-show="props.showLabelText" 
            :class="{ 'alpheios-alignment-option-item__label-invisible': props.showLabelTextAsCheckboxLabel }">
       <span class="alpheios-alignment-option-item__label-text" 
@@ -261,7 +261,7 @@ const radioClasses = computed(() => {
 })
 
 const updateSelectedFromExternal = () => {
-  if (state.selected === props.optionItem.currentValue) { return }
+  if (!props.optionItem || (state.selected === props.optionItem.currentValue)) { return }
 
   state.selected = props.optionItem.currentValue
 

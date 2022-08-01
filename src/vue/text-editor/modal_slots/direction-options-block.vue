@@ -31,7 +31,7 @@ const props = defineProps({
 })
 
 const optionItem = computed(() => {
-  return $store.state.optionsUpdated && props.localOptions.sourceText.items.direction
+  return $store.state.optionsUpdated && props.localOptions.sourceText && props.localOptions.sourceText.items.direction
 })
 
 </script>
