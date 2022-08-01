@@ -11,14 +11,13 @@ const webpack = require('webpack')
 const path = require('path')
 const projectRoot = process.cwd()
 
-module.exports = {
-  mode: 'development',
+const common = {
   entry: './src/index.js',
   output: {
     library: 'AlignmentEditor',
     libraryTarget: 'window',
-    filename: 'alpheios-alignment-editor.js',
-    path: path.resolve(projectRoot, 'public/dist')
+    path: path.resolve(projectRoot, 'public/dist'),
+    chunkFilename: 'alignment-editor.[name].js'
   },
   resolve: {
     alias: {
@@ -101,16 +100,8 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'style/style-alignment-editor.css'
-    }),
     new Dotenv()
-  ],
-  devServer: {
-    static: {
-      directory: path.resolve(projectRoot, 'public'),
-    },
-    compress: true,
-    port: 9000
-  }
+  ]
 }
+
+module.exports = common
