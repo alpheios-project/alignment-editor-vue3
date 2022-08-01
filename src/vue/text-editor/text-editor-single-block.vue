@@ -26,10 +26,8 @@
       </div>
 
       <div class="alpheios-alignment-editor-actions-menu__upload-block" v-show="state.showUploadMenu" >
-          <input type="file" :id = "fileUploadId" 
-                 :ref="el => (fileUploadRef = el)"
-                 class="alpheios-fileupload" @change="loadTextFromFile">
-          <label :for="fileUploadId" class="alpheios-fileupload-label alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-upload">
+          <input type="file" :id = "fileUploadRef" :ref="fileUploadRef" class="alpheios-fileupload" @change="loadTextFromFile">
+          <label :for="fileUploadRef" class="alpheios-fileupload-label alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-upload">
               {{ l10n.getMsgS('INITIAL_CHOOSE_FILE') }} 
           </label>
           <span class="alpheios-fileupload-label-filename" v-if="state.uploadFile">{{ state.uploadFile }}</span>
