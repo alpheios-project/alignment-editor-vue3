@@ -1,5 +1,5 @@
 <template>
-  <modal-base modalName="annotation" :draggable="true" height="auto" :shiftY="0.3" > 
+  <modal-base modalName="annotation" :draggable="true" height="auto" :shiftY="0.3" data-alpheios-ignore="all" > 
     <div class="alpheios-alignment-editor-modal-annotations" :draggable="true" height="auto" data-alpheios-ignore="all">
       <div class="alpheios-modal-header" v-if="props.token">
           <span class="alpheios-alignment-modal-close-icon" @click = "closeModal">

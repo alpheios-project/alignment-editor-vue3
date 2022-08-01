@@ -26,9 +26,7 @@
       </div>
 
       <div class="alpheios-alignment-editor-actions-menu__upload-block" v-show="state.showUploadMenu" >
-          <input type="file" :id = "fileUploadId" 
-                 :ref="el => (fileUploadRef = el)"
-                 class="alpheios-fileupload" @change="loadTextFromFile">
+          <input type="file" :id = "fileUploadId" :ref="el => (fileUploadRef = el)" class="alpheios-fileupload" @change="loadTextFromFile">
           <label :for="fileUploadId" class="alpheios-fileupload-label alpheios-editor-button-tertiary alpheios-actions-menu-button alpheios-actions-menu-button-upload">
               {{ l10n.getMsgS('INITIAL_CHOOSE_FILE') }} 
           </label>
@@ -213,7 +211,6 @@ watch(
 
 const formattedTextId  = computed(() => props.textId ?? 'no-id' )
 const formattedPrefix = computed(() => `${props.textType}-${formattedTextId.value}`)
-
 
 const modalNameSourceType = computed(() => {
   return `source-type-${formattedPrefix.value}`
