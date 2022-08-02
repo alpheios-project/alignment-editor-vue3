@@ -3,7 +3,7 @@
         <p class="alpheios-alignment-editor-metadata__info-title" @click = "state.showDetails=!state.showDetails">
             Instructions for metadata updates
         </p>
-        <div class="alpheios-alignment-editor-metadata__info-details" v-show = "state.showDetails" v-html="l10n.getMsgS('METADATA_INSTRUCTIONS')">
+        <div class="alpheios-alignment-editor-metadata__info-details" v-show = "state.showDetails" v-html="instructions">
         </div>
     </div>
 </template>
@@ -15,6 +15,10 @@ const l10n = computed(() => { return L10nSingleton })
 
 const state = reactive({
   showDetails: false
+})
+
+const instructions = computed(() => {
+  return `${l10n.getMsgS('METADATA_INSTRUCTIONS')} <p><a class="alpheios-alignment-editor-metadata__info-link" href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#section-3" target="_blank">read more</a></p>`
 })
 </script>
 <style lang="scss">
