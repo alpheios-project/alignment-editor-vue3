@@ -10,7 +10,7 @@
           <td class="alpheios-alignment-editor-alignments-table_link" @click="uploadAlignmentFromDB(alData)">
             {{ alData.title || alData.langsList }}
           </td>
-          <td class="alpheios-alignment-editor-alignments-table_link" @click="uploadAlignmentFromDB(alData)">
+          <td class="alpheios-alignment-editor-alignments-table_link alpheios-alignment-editor-alignments-table_has_tokens" @click="uploadAlignmentFromDB(alData)">
             {{ formatHasTokens(alData.hasTokens) }}
           </td>
           <td class="alpheios-alignment-editor-alignments-table_delete-icon" v-if="!menuVersion">
@@ -104,6 +104,10 @@ watch(
         &.alpheios-alignment-editor-alignments-table_dt {
             min-width: 144px;
             text-decoration: underline; 
+        }
+
+        &.alpheios-alignment-editor-alignments-table_has_tokens {
+            min-width: 80px;
         }
 
     }
