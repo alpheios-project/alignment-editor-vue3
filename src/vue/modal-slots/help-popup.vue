@@ -1,6 +1,6 @@
 <template>
   <modal-base :modalName="props.modalName" 
-          height="80%" width="80%" :shiftY="0.3"
+          :height="modalHeight" width="80%" :shiftY="0.3"
           :max-width="1300" :adaptive="true">  
     <div class="alpheios-alignment-editor-modal-help">
       <div class="alpheios-modal-header" >
@@ -28,7 +28,9 @@ const props = defineProps({
   }
 })
 
-
+const modalHeight = computed(() => {
+  return props.modalName === 'help-edit' ? 'auto' : '80%' 
+})
 </script>
 
 <style lang="scss">
