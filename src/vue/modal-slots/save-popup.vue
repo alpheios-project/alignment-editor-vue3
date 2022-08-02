@@ -14,7 +14,7 @@
                     class="alpheios-main-menu-download-block-radio-block_item" >
                   <input type="radio" :id="downloadTypeId(dType.name)" :value="dType.name" 
                        v-model="state.currentDownloadType" >
-                  <tooltip :tooltipText = "dType.tooltip" tooltipDirection = "top-right">
+                  <tooltip :tooltipText = "dType.tooltip" tooltipDirection = "right">
                     <label :for="downloadTypeId(dType.name)">{{ dType.label }}</label>
                   </tooltip>
               </span>
@@ -133,6 +133,7 @@ const downloadData = async () => {
 <style lang="scss">
   .alpheios-alignment-editor-modal-save {
     .alpheios-modal-body {
+      padding: 20px 10px;
       overflow: initial;
     }
 
