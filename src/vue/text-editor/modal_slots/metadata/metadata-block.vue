@@ -115,7 +115,7 @@ const changeActiveGroup = (metaGroup) => {
   .alpheios-modal-body {
     // max-height: 700px;
     border: 0;
-    padding: 0 10px 10px;
+    padding: 10px;
     margin: 25px 0;
   }
 
