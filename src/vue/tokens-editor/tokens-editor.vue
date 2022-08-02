@@ -41,25 +41,7 @@
   
     <options-text-edit />
 
-<!--
-    <modal name="options-edit" :toggleState="state.optionsTextEditState" 
-          :draggable="true" height="auto" :shiftY="0.3" >   
-      <options-text-edit @closeModal = "state.optionsTextEditState++" />
-    </modal>
-
-    <modal name="help-edit" :toggleState="state.helpEditState" 
-          height="auto" width="80%" :shiftY="0.3"
-          :max-width="1300" :adaptive="true">     
-      <help-popup @closeModal = "state.helpEditState++" mname = "help-edit">
-        <template v-slot:content > <help-block-edit /> </template>
-      </help-popup>
-    </modal>
-
-    <modal name="insert-tokens" :toggleState="state.insertTokensState" 
-          height="auto" :shiftY="0.3" >   
-      <insert-tokens @closeModal = "closeInsertTokens"  :token = "state.edittedToken"  />
-    </modal>
--->
+    <insert-tokens :token = "state.edittedToken"  />
   </div>
 </template>
 <script setup>
@@ -125,12 +107,12 @@ const alignmentStared = computed(() => {
 
 const startInsertTokens = (token) => {
   state.edittedToken = token
-  state.insertTokensState++
+  $modal.show('insert-tokens')
 }
 
 const closeInsertTokens = () => {
   state.edittedToken = null
-  state.insertTokensState++
+  $modal.show('insert-tokens')
 }
 
 const goToTextEnterScreen = () => {
