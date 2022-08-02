@@ -6,9 +6,14 @@
       </span>
       <div class="alpheios-alignment-app-menu__buttons">
         <div class="alpheios-alignment-app-menu__buttons-actions">
-          
+
+          <button class="alpheios-app-menu-link" id ="alpheios-main-menu-to-home" 
+                  @click="reloadPage">
+                  {{ l10n.getMsgS('TO_HOME') }}
+          </button>
+
           <button class="alpheios-app-menu-link" id ="alpheios-main-menu-clear-all" 
-                  @click="clearAll">
+                  @click="newInitialAlignment">
                   {{ l10n.getMsgS('INITIAL_NEW_ALIGNMENT') }}
           </button>
 
@@ -131,6 +136,11 @@ const loadTextFromFile = () => {
   reader.readAsText(file)
 }
 
+const newInitialAlignment = () => {
+  clearAll()
+  emit("new-initial-alignment")
+}
+
 const clearAll = () => {
   alpheiosfileuploadpage.value.value = ''
   state.showUploadBlock = false
@@ -138,7 +148,10 @@ const clearAll = () => {
 
   state.currentPage = 'initial-page'
   closeMenu()
-  emit("new-initial-alignment")
+}
+
+const reloadPage = () => {
+  location.reload(true)
 }
 
 const closeMenu = () => {
