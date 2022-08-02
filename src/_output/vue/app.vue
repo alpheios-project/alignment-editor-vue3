@@ -3,7 +3,8 @@
 
       <main-menu 
         :menuShow = "state.menuShow"
-        @changeOrder = "changeOrder" @updateVisibility = "updateVisibility"
+        @changeOrder = "changeOrder" 
+        @updateVisibility = "updateVisibility"
         @updateViewType = "updateViewType"
         :onlyFilter = "true"
         :currentView = "state.viewType"

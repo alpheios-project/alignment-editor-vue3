@@ -608,7 +608,7 @@ export default class TextsController {
     const result = await StorageController.deleteMany(alData.alignmentID, 'fullAlignmentByID')
 
     if (result) {
-      this.store.commit('incremetReloadAlignmentsList')
+      this.store.commit('incrementReloadAlignmentsList')
     }
     return result
   }
@@ -649,7 +649,7 @@ export default class TextsController {
     const result = await StorageController.clear()
 
     if (result) {
-      this.store.commit('incremetReloadAlignmentsList')
+      this.store.commit('incrementReloadAlignmentsList')
     }
     return result
   }

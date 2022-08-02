@@ -95,6 +95,8 @@ const indexedDBAvailable = computed(() => {
 
 const startNewAlignment = () => {
   emit("new-initial-alignment")
+  state.showUploadBlock = false
+  state.showUploadFromDB = false
 }
 
 const resumePrevAlignment = () => {
@@ -135,6 +137,7 @@ const loadTextFromFile = () => {
 const uploadDataFromDB = (alData) => {
   emit('upload-data-from-db', alData)
   state.showUploadBlock = false
+  state.showUploadFromDB = false
 }
 
 const deleteDataFromDB = (alData) => {

@@ -6,7 +6,7 @@
 
     <main-menu 
       @upload-data-from-file = "uploadDataFromFile"
-      @clear-all = "startOver"
+      @clear-all = "clearAll"
       @new-initial-alignment = "newInitialAlignment"
       @upload-data-from-db = "uploadDataFromDB"
 
@@ -171,6 +171,7 @@ const newInitialAlignment = () => {
 const createANewAlignment = (alTitle) => {
   $textC.createAlignment(alTitle)
   $historyAGC.startTracking($textC.alignment)
+  $textC.store.commit('incrementAlignmentRestarted')
   showSourceTextEditor()
 }
 
@@ -270,6 +271,12 @@ const startOver = (alignment) => {
   } else {
     showSourceTextEditor()
   }
+}
+
+const clearAll = () => {
+  NotificationSingleton.clearNotifications()
+  $textC.store.commit('incrementReloadAlignmentsList')
+  showInitialScreen()
 }
 
 const alignTexts = async () => {
