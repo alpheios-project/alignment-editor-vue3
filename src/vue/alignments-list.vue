@@ -13,7 +13,7 @@
           <td class="alpheios-alignment-editor-alignments-table_link" @click="uploadAlignmentFromDB(alData)">
             {{ formatHasTokens(alData.hasTokens) }}
           </td>
-          <td class="alpheios-alignment-editor-alignments-table_delete-icon">
+          <td class="alpheios-alignment-editor-alignments-table_delete-icon" v-if="!menuVersion">
             <span :id="removeId(alData)" class="alpheios-alignment-editor-alignments-table_delete-icon_span" 
             @click="deleteAlignmentFromDB(alData)">
               <delete-icon />
@@ -22,7 +22,7 @@
         </tr>
     </table>
 
-    <p class="alpheios-alignment-editor-alignments-clear-all" v-if="state.alignments.length > 0">
+    <p class="alpheios-alignment-editor-alignments-clear-all" v-if="!menuVersion && state.alignments.length > 0">
       <button class="alpheios-editor-button-tertiary alpheios-actions-menu-button" @click="clearAllAlignments">
           Clear Alignments</button>
     </p>
@@ -38,6 +38,14 @@ import { useStore } from 'vuex'
 const $textC = inject('$textC')
 const l10n = computed(() => { return L10nSingleton })
 const $store = useStore()
+
+const props = defineProps({
+  menuVersion: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
+})
 
 const state = reactive({ 
   alignments: []
