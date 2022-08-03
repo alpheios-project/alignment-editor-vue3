@@ -5,11 +5,12 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "npx webpack serve --config build/core.config.js",
-    "build": "npm run build-output && npm run build-core-prod",
-    "build-dev": "npm run build-output && npm run build-core-dev",
+    "build": "npm run build-output && npm run build-core-prod && npm run build-pages",
+    "build-dev": "npm run build-output && npm run build-core-dev && npm run build-pages",
     "build-core-prod": "npx webpack --config build/core/prod.config.js",
     "build-core-dev": "npx webpack --config build/core/dev.config.js",
     "build-output": "npx webpack --config build/output.config.js",
+    "build-pages": "npx webpack --config build/pages.config.js",
     "test": "jest tests --coverage",
     "test-vue": "jest tests/vue/ --coverage",
     "test-a": "jest tests/lib/controllers/",
@@ -20,10 +21,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@splidejs/splide": "^4.0.2",
     "intl-messageformat": "^10.0.1",
     "mitt": "^3.0.0",
     "vue": "^3.2.36",
     "vue-multiselect": "^3.0.0-alpha.2",
+    "vue3-youtube": "^0.1.9",
     "vuedraggable": "^4.1.0",
     "vuex": "^4.0.2"
   },

@@ -66,6 +66,8 @@
           </div>
 
         </div>
+
+        <page-links />
       </div>
   </div>
 
@@ -73,6 +75,7 @@
 <script setup>
 import L10nSingleton from '@/lib/l10n/l10n-singleton.js'
 import AlignmentsList from '@/vue/alignments-list.vue'
+import PageLinks from '@/vue/page-links.vue'
 
 import { reactive, ref, inject, computed, defineAsyncComponent } from 'vue'
 
