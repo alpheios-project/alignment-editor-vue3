@@ -10,7 +10,7 @@
         <div class="alpheios-alignment-editor-metadata" >
           <div class="alpheios-alignment-editor-metadata__group__common" >
             <metadata-term-block 
-              v-for="metadataTerm in commonMetadata.items" :key="metadataTerm.key"
+              v-for="metadataTerm in commonMetadata.items" :key="metadataTerm.id"
               :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
           </div>
           <div class="alpheios-alignment-editor-metadata__group__titles" >
@@ -31,7 +31,7 @@
               v-show = "state.activeGroup === metaGroup.key"
               v-for="(metaGroup, metaGroupIndex) in allMetadataGroupData" :key="constructKey(metaGroupIndex, 2)" >
             <metadata-term-block 
-              v-for="metadataTerm in metaGroup.items" :key="metadataTerm.key"
+              v-for="metadataTerm in metaGroup.items" :key="metadataTerm.id"
               :text-type="textType" :text-id="textId" :metadata-term="metadataTerm" />
           </div>
         </div>
