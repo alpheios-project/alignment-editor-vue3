@@ -18,7 +18,7 @@ const state = reactive({
 })
 
 const instructions = computed(() => {
-  return `${l10n.getMsgS('METADATA_INSTRUCTIONS')} <p><a class="alpheios-alignment-editor-metadata__info-link" href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#section-3" target="_blank">read more</a></p>`
+  return `${l10n.value.getMsgS('METADATA_INSTRUCTIONS')} <p><a class="alpheios-alignment-editor-metadata__info-link" href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/#section-3" target="_blank">read more</a></p>`
 })
 </script>
 <style lang="scss">
