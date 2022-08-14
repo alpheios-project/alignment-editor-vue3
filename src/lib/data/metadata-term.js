@@ -50,34 +50,57 @@ export default class MetadataTerm {
     }
   }
 
-  convertToJSON () {
+  convertToJSON (textType) {
+    // now we need to support both definitions by id and by label
+    const label = (typeof this.property.label === 'string') ? this.property.label : this.property.label[textType]
+
     return {
-      property: this.property.label,
+      propertyId: this.property.id,
+      property: label,
       value: this.value
     }
   }
 
   static convertFromJSON (data) {
-    const property = Object.values(MetadataTerm.property).find(prop => prop.label === data.property)
+    let property
+
+    if (data.propertyId) {
+      property = MetadataTerm.property[data.propertyId]
+    } else {
+      property = Object.values(MetadataTerm.property).find(prop => {
+        return (typeof prop.label === 'string') ? prop.label === data.property : Object.values(prop.label).includes(data.property)
+      })
+    }
+
     return new MetadataTerm(property, data.value)
   }
 
-  convertToIndexedDB () {
+  convertToIndexedDB (textType) {
+    const label = (typeof this.property.label === 'string') ? this.property.label : this.property.label[textType]
     return {
-      id: this.id,
-      property: this.property.label,
+      propertyId: this.property.id,
+      property: label,
       value: this.value
     }
   }
 
   static convertFromIndexedDB (data) {
-    const property = Object.values(MetadataTerm.property).find(prop => prop.label === data.property)
+    let property
+    if (data.propertyId) {
+      property = MetadataTerm.property[data.propertyId]
+    } else {
+      property = Object.values(MetadataTerm.property).find(prop => {
+        return (typeof prop.label === 'string') ? prop.label === data.property : Object.values(prop.label).includes(data.property)
+      })
+    }
+
     return new MetadataTerm(property, data.value, data.metaId)
   }
 }
 
 MetadataTerm.property = {
   TITLE: {
+    id: 'TITLE',
     label: 'title',
     labell10n: 'METADATA_TERM_LABEL_TITLE',
     fieldtype: 'string',
@@ -90,6 +113,7 @@ MetadataTerm.property = {
   },
 
   CREATOR: {
+    id: 'CREATOR',
     label: 'creator',
     labell10n: 'METADATA_TERM_LABEL_CREATOR',
     fieldtype: 'string',
@@ -102,6 +126,7 @@ MetadataTerm.property = {
   },
 
   CONTRIBUTOR: {
+    id: 'CONTRIBUTOR',
     label: 'contributor',
     labell10n: 'METADATA_TERM_LABEL_CONTRIBUTOR',
     fieldtype: 'string',
@@ -114,6 +139,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_COVERAGE: {
+    id: 'DUBLIN_COVERAGE',
     label: 'coverage',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_COVERAGE',
     fieldtype: 'string',
@@ -126,6 +152,7 @@ MetadataTerm.property = {
   },
 
   DATE_COPYRIGHTED: {
+    id: 'DATE_COPYRIGHTED',
     label: 'date copyrighted',
     labell10n: 'METADATA_TERM_LABEL_DATE_COPYRIGHTED',
     fieldtype: 'date',
@@ -138,6 +165,7 @@ MetadataTerm.property = {
   },
 
   DESCRIPTION: {
+    id: 'DESCRIPTION',
     label: 'description',
     labell10n: 'METADATA_TERM_LABEL_DESCRIPTION',
     fieldtype: 'string',
@@ -150,6 +178,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_FORMAT: {
+    id: 'DUBLIN_FORMAT',
     label: 'format',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_FORMAT',
     fieldtype: 'string',
@@ -162,6 +191,7 @@ MetadataTerm.property = {
   },
 
   IDENTIFIER: {
+    id: 'IDENTIFIER',
     label: 'identifier',
     labell10n: 'METADATA_TERM_LABEL_IDENTIFIER',
     fieldtype: 'URI',
@@ -174,6 +204,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_LANGUAGE: {
+    id: 'DUBLIN_LANGUAGE',
     label: 'language',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_LANGUAGE',
     fieldtype: 'string',
@@ -186,6 +217,7 @@ MetadataTerm.property = {
   },
 
   PUBLISHER: {
+    id: 'PUBLISHER',
     label: 'publisher',
     labell10n: 'METADATA_TERM_LABEL_PUBLISHER',
     fieldtype: 'string',
@@ -198,6 +230,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_RELATION: {
+    id: 'DUBLIN_RELATION',
     label: 'relation',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_RELATION',
     fieldtype: 'string',
@@ -210,6 +243,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_RIGHTS: {
+    id: 'DUBLIN_RIGHTS',
     label: 'rights',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_RIGHTS',
     fieldtype: 'string',
@@ -222,6 +256,7 @@ MetadataTerm.property = {
   },
 
   SOURCE: {
+    id: 'SOURCE',
     label: 'source',
     labell10n: 'METADATA_TERM_LABEL_SOURCE',
     fieldtype: 'URI',
@@ -234,6 +269,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_SUBJECT: {
+    id: 'DUBLIN_SUBJECT',
     label: 'subject',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_SUBJECT',
     fieldtype: 'string',
@@ -246,6 +282,7 @@ MetadataTerm.property = {
   },
 
   DUBLIN_TYPE: {
+    id: 'DUBLIN_TYPE',
     label: 'type',
     labell10n: 'METADATA_TERM_LABEL_DUBLIN_TYPE',
     fieldtype: 'string',
@@ -258,6 +295,7 @@ MetadataTerm.property = {
   },
 
   ALPH_TITLE: {
+    id: 'ALPH_TITLE',
     label: 'title',
     labell10n: 'METADATA_TERM_LABEL_TITLE',
     fieldtype: 'string',
@@ -271,6 +309,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_AUTHOR: {
+    id: 'ALPH_AUTHOR',
     synonim: 'AUTHOR',
     limitedFor: 'origin',
     label: 'author',
@@ -283,6 +322,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_TRANSLATOR: {
+    id: 'ALPH_TRANSLATOR',
     synonim: 'TRANSLATOR',
     limitedFor: 'target',
     label: 'translator',
@@ -295,6 +335,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_YEAR_WRITTEN: {
+    id: 'ALPH_YEAR_WRITTEN',
     limitedFor: 'origin',
     label: 'year written',
     labell10n: 'METADATA_TERM_LABEL_ALPH_YEAR_WRITTEN',
@@ -306,6 +347,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_YEAR_FIRST_PUBLISHED: {
+    id: 'ALPH_YEAR_FIRST_PUBLISHED',
     limitedFor: 'origin',
     label: 'year first published',
     labell10n: 'METADATA_TERM_LABEL_ALPH_YEAR_FIRST_PUBLISHED',
@@ -318,6 +360,7 @@ MetadataTerm.property = {
   },
 
   ALPH_LANGUAGE: {
+    id: 'ALPH_LANGUAGE',
     label: {
       origin: 'original language',
       target: 'translation language'
@@ -338,6 +381,7 @@ MetadataTerm.property = {
   },
 
   ALPH_EDITION_YEAR: {
+    id: 'ALPH_EDITION_YEAR',
     limitedFor: 'origin',
     label: 'edition year',
     labell10n: 'METADATA_TERM_LABEL_ALPH_EDITION_YEAR',
@@ -349,6 +393,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_EDITOR: {
+    id: 'ALPH_EDITOR',
     limitedFor: 'origin',
     label: 'editor',
     labell10n: 'METADATA_TERM_LABEL_ALPH_EDITOR',
@@ -360,6 +405,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_DESCRIPTION: {
+    id: 'ALPH_DESCRIPTION',
     limitedFor: 'origin',
     label: 'description',
     labell10n: 'METADATA_TERM_LABEL_ALPH_DESCRIPTION',
@@ -371,6 +417,7 @@ MetadataTerm.property = {
     group: 'alpheios'
   },
   ALPH_GENRE: {
+    id: 'ALPH_GENRE',
     limitedFor: 'origin',
     label: 'genre',
     labell10n: 'METADATA_TERM_LABEL_ALPH_GENRE',
@@ -395,6 +442,7 @@ MetadataTerm.property = {
   },
 
   ALPH_YEAR_TRANSLATED: {
+    id: 'ALPH_YEAR_TRANSLATED',
     limitedFor: 'target',
     label: 'year translated',
     labell10n: 'METADATA_TERM_LABEL_ALPH_YEAR_TRANSLATED',
@@ -407,6 +455,7 @@ MetadataTerm.property = {
   },
 
   ALPH_YEAR_PUBLISHED: {
+    id: 'ALPH_YEAR_PUBLISHED',
     limitedFor: 'target',
     label: 'year published',
     labell10n: 'METADATA_TERM_LABEL_ALPH_YEAR_PUBLISHED',
@@ -419,6 +468,7 @@ MetadataTerm.property = {
   },
 
   ALPH_YEAR_EDITION_USED: {
+    id: 'ALPH_YEAR_EDITION_USED',
     limitedFor: 'target',
     label: 'edition used',
     labell10n: 'METADATA_TERM_LABEL_ALPH_EDITION_USED',
@@ -431,6 +481,7 @@ MetadataTerm.property = {
   },
 
   ALPH_PUBLISHER: {
+    id: 'ALPH_PUBLISHER',
     limitedFor: 'target',
     label: 'publisher',
     labell10n: 'METADATA_TERM_LABEL_ALPH_PUBLISHER',
@@ -443,6 +494,7 @@ MetadataTerm.property = {
   },
 
   FILTER_BUTTON: {
+    id: 'FILTER_BUTTON',
     label: 'short name',
     labell10n: 'METADATA_TERM_LABEL_FILTER_BUTTON',
     fieldtype: 'string',

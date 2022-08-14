@@ -77,11 +77,11 @@ onMounted(() => {
 })
 
 const itemId = computed(() => {
-  return `alpheios-meta-${props.textType}-${props.textId}-${props.metadataTerm.property.label}-id`
+  return `alpheios-meta-${props.textType}-${props.textId}-${props.metadataTerm.property.id}-id`
 })
 
 const removeId = computed(() => {
-  return `alpheios-meta-remove-${props.textType}-${props.textId}-${props.metadataTerm.property.label}-id`
+  return `alpheios-meta-remove-${props.textType}-${props.textId}-${props.metadataTerm.property.id}-id`
 })
 
 const docSource = computed(() => {
