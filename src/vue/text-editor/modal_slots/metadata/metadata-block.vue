@@ -132,14 +132,15 @@ const changeActiveGroup = (metaGroup) => {
     cursor: pointer;
 
     
-    background: #90a959;
+    background: #0e8319;
     color: #fff;
     border-radius: 5px;
     padding:10px;
     margin-right: 15px;
 
     &.alpheios-alignment-editor-metadata__group__title_inactive {
-      background: #000;
+      background: #fff;
+      color: #000;
     }
   }
 
